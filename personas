@@ -1,0 +1,445 @@
+{
+  "fileName": "Design System",
+  "textStyles": [
+    {
+      "name": "Display/D1",
+      "fontFamily": "Circular Std",
+      "fontWeight": "Black",
+      "fontSize": 56,
+      "letterSpacing": {
+        "unit": "PIXELS",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Display/D2",
+      "fontFamily": "Circular Std",
+      "fontWeight": "Black",
+      "fontSize": 40,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Heading/H1",
+      "fontFamily": "Circular Std",
+      "fontWeight": "Black",
+      "fontSize": 36,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Heading/H2",
+      "fontFamily": "Circular Std",
+      "fontWeight": "Black",
+      "fontSize": 32,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Heading/H3",
+      "fontFamily": "Circular Std",
+      "fontWeight": "Black",
+      "fontSize": 28,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Heading/H4",
+      "fontFamily": "Circular Std",
+      "fontWeight": "Black",
+      "fontSize": 24,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Heading/H5",
+      "fontFamily": "Circular Std",
+      "fontWeight": "Black",
+      "fontSize": 20,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Heading/H6",
+      "fontFamily": "Circular Std",
+      "fontWeight": "Black",
+      "fontSize": 18,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Subheading/S1",
+      "fontFamily": "Circular Std",
+      "fontWeight": "Bold",
+      "fontSize": 16,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Subheading/S2",
+      "fontFamily": "Circular Std",
+      "fontWeight": "Bold",
+      "fontSize": 14,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Subheading/S3",
+      "fontFamily": "Circular Std",
+      "fontWeight": "Bold",
+      "fontSize": 12,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Subheading/S4",
+      "fontFamily": "Circular Std",
+      "fontWeight": "Bold",
+      "fontSize": 10,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/xl/regular",
+      "fontFamily": "Open Sans",
+      "fontWeight": "Regular",
+      "fontSize": 20,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/xl/semibold",
+      "fontFamily": "Open Sans",
+      "fontWeight": "SemiBold",
+      "fontSize": 20,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/xl/bold",
+      "fontFamily": "Open Sans",
+      "fontWeight": "Bold",
+      "fontSize": 20,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/lg/regular",
+      "fontFamily": "Open Sans",
+      "fontWeight": "Regular",
+      "fontSize": 18,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/lg/semibold",
+      "fontFamily": "Open Sans",
+      "fontWeight": "SemiBold",
+      "fontSize": 18,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/lg/bold",
+      "fontFamily": "Open Sans",
+      "fontWeight": "Bold",
+      "fontSize": 18,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/md/regular",
+      "fontFamily": "Open Sans",
+      "fontWeight": "Regular",
+      "fontSize": 16,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/md/semibold",
+      "fontFamily": "Open Sans",
+      "fontWeight": "SemiBold",
+      "fontSize": 16,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/md/bold",
+      "fontFamily": "Open Sans",
+      "fontWeight": "Bold",
+      "fontSize": 16,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/sm/regular",
+      "fontFamily": "Open Sans",
+      "fontWeight": "Regular",
+      "fontSize": 14,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/sm/semibold",
+      "fontFamily": "Open Sans",
+      "fontWeight": "SemiBold",
+      "fontSize": 14,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/sm/bold",
+      "fontFamily": "Open Sans",
+      "fontWeight": "Bold",
+      "fontSize": 14,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/xs/regular",
+      "fontFamily": "Open Sans",
+      "fontWeight": "Regular",
+      "fontSize": 12,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/xs/semibold",
+      "fontFamily": "Open Sans",
+      "fontWeight": "SemiBold",
+      "fontSize": 12,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/xs/bold",
+      "fontFamily": "Open Sans",
+      "fontWeight": "Bold",
+      "fontSize": 12,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/2xs/regular",
+      "fontFamily": "Open Sans",
+      "fontWeight": "Regular",
+      "fontSize": 10,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/2xs/semibold",
+      "fontFamily": "Open Sans",
+      "fontWeight": "SemiBold",
+      "fontSize": 10,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Text/2xs/bold",
+      "fontFamily": "Open Sans",
+      "fontWeight": "Bold",
+      "fontSize": 10,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Overline/sm",
+      "fontFamily": "Circular Std",
+      "fontWeight": "Bold",
+      "fontSize": 12,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 4
+      },
+      "textCase": "UPPER"
+    },
+    {
+      "name": "Overline/xs",
+      "fontFamily": "Circular Std",
+      "fontWeight": "Bold",
+      "fontSize": 10,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 4
+      },
+      "textCase": "UPPER"
+    },
+    {
+      "name": "Button/56",
+      "fontFamily": "Open Sans",
+      "fontWeight": "SemiBold",
+      "fontSize": 18,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Button/52",
+      "fontFamily": "Open Sans",
+      "fontWeight": "SemiBold",
+      "fontSize": 16,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Button/48",
+      "fontFamily": "Open Sans",
+      "fontWeight": "SemiBold",
+      "fontSize": 16,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Button/44",
+      "fontFamily": "Open Sans",
+      "fontWeight": "SemiBold",
+      "fontSize": 16,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Button/40",
+      "fontFamily": "Open Sans",
+      "fontWeight": "SemiBold",
+      "fontSize": 15,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Button/36",
+      "fontFamily": "Open Sans",
+      "fontWeight": "SemiBold",
+      "fontSize": 14,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Button/32",
+      "fontFamily": "Open Sans",
+      "fontWeight": "SemiBold",
+      "fontSize": 13,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Button/28",
+      "fontFamily": "Open Sans",
+      "fontWeight": "SemiBold",
+      "fontSize": 12,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    }
+  ]
+}
