@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Opencare — User Journey Maps</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Opencare Design Tokens */
+    --oc-25:  #F8FBFC;
+    --oc-50:  #E1ECF3;
+    --oc-100: #B3C6D0;
+    --oc-200: #70858A;
+    --oc-300: #5B6D73;
+    --oc-400: #435259;
+    --oc-500: #38464E;
+    --oc-600: #2D3C45;
+    --oc-700: #26333B;
+    --oc-800: #1E292F;
+    --oc-900: #192126;
+
+    --teal:        #25A186;
+    --teal-hover:  #1E8A72;
+    --teal-light:  #8DDAC9;
+    --teal-pale:   #DDF0EE;
+    --amber:       #F9A208;
+    --amber-pale:  #FFF4DC;
+    --coral:       #F37E6D;
+    --coral-pale:  #FDECEA;
+    --ink:         #192126;
+    --ink-60:      #5B6D73;
+    --ink-20:      #E1ECF3;
+    --cream:       #F8FBFC;
+    --white:       #FFFFFF;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 10px rgba(25,33,38,0.06);
+    --shadow-md: 0 6px 24px rgba(25,33,38,0.09);
+    --shadow-lg: 0 16px 48px rgba(25,33,38,0.12);
+
+    --ff-display: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --ff-body: 'Open Sans', sans-serif;
+
+    /* Stage colors */
+    --s1-bg: #EBF5F3; --s1-accent: #25A186; --s1-light: #C7EAE4;
+    --s2-bg: #EEF3F7; --s2-accent: #4B7FA6; --s2-light: #BFCFE0;
+    --s3-bg: #F0EEF7; --s3-accent: #7B5EC4; --s3-light: #CABFE8;
+    --s4-bg: #F7EFF0; --s4-accent: #C45E74; --s4-light: #E8BFC8;
+    --s5-bg: #F3F0EB; --s5-accent: #A68A25; --s5-light: #E0D2A0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--ff-body);
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: var(--ink);
+    padding: 56px 48px 52px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(37,161,134,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -90px; left: 15%;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(56,70,78,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--oc-100);
+    margin-bottom: 14px;
+    font-family: var(--ff-display);
+  }
+  .header-title {
+    font-family: var(--ff-display);
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.1;
+    max-width: 680px;
+    margin: 0 auto 8px;
+  }
+  .header-title em { font-style: normal; color: var(--teal-light); }
+  .header-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 10px;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+  }
+  .header-meta {
+    margin-top: 28px;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .header-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+  }
+  .header-badge span {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--teal-light);
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  /* ─── PERSONA TABS ─── */
+  .persona-nav {
+    background: var(--oc-800);
+    padding: 0 48px;
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid rgba(255,255,255,0.06);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .persona-nav::-webkit-scrollbar { display: none; }
+
+  .persona-tab {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 28px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: rgba(255,255,255,0.45);
+    font-family: var(--ff-display);
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.2s, border-color 0.2s;
+    position: relative;
+  }
+  .persona-tab:hover { color: rgba(255,255,255,0.75); }
+  .persona-tab.active { color: var(--white); }
+  .persona-tab.active.marcus { border-bottom-color: var(--teal); }
+  .persona-tab.active.priya  { border-bottom-color: var(--coral); }
+  .persona-tab.active.tomas  { border-bottom-color: var(--amber); }
+
+  .tab-avatar-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .marcus .tab-avatar-dot { background: rgba(37,161,134,0.18); }
+  .priya  .tab-avatar-dot { background: rgba(243,126,109,0.18); }
+  .tomas  .tab-avatar-dot { background: rgba(249,162,8,0.18); }
+
+  .tab-label-group { text-align: left; }
+  .tab-overline {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 1px;
+    font-weight: 600;
+  }
+  .persona-tab.active .tab-overline { color: rgba(255,255,255,0.5); }
+
+  /* ─── MAIN ─── */
+  .main {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 48px 48px 80px;
+  }
+
+  /* ─── JOURNEY PANEL ─── */
+  .journey-panel { display: none; }
+  .journey-panel.active { display: block; }
+
+  /* ─── PERSONA SUMMARY BAR ─── */
+  .persona-summary {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    background: var(--white);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 36px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--ink-20);
+    flex-wrap: wrap;
+  }
+  .persona-summary-avatar {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+  .persona-summary-info { flex: 1; min-width: 200px; }
+  .persona-summary-archetype {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    font-family: var(--ff-display);
+  }
+  .persona-summary-name {
+    font-size: 22px;
+    font-weight: 900;
+    font-family: var(--ff-display);
+    margin-bottom: 6px;
+    line-height: 1.1;
+  }
+  .persona-summary-quote {
+    font-size: 13px;
+    color: var(--ink-60);
+    font-style: italic;
+    line-height: 1.5;
+    max-width: 480px;
+  }
+  .persona-summary-chips {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .summary-chip {
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1.5px solid var(--ink-20);
+    color: var(--ink);
+    background: var(--cream);
+    font-family: var(--ff-display);
+  }
+
+  /* ─── STAGE LEGEND ─── */
+  .stage-legend {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+    align-items: center;
+  }
+  .stage-legend-label {
+    font-size: 11px;
+    color: var(--ink-60);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-right: 6px;
+    font-family: var(--ff-display);
+  }
+  .legend-dot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--ink-60);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .legend-dot i {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  /* ─── JOURNEY TABLE ─── */
+  .journey-table {
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    border: 1px solid var(--ink-20);
+    margin-bottom: 40px;
+  }
+
+  /* ─── TABLE HEADER ROW ─── */
+  .table-header {
+    display: grid;
+    grid-template-columns: 180px repeat(5, 1fr);
+    background: var(--oc-800);
+  }
+  .th-row-label {
+    padding: 20px 20px;
+    display: flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    font-family: var(--ff-display);
+  }
+  .th-stage {
+    padding: 20px 20px;
+    border-left: 1px solid rgba(255,255,255,0.07);
+    text-align: center;
+  }
+  .th-stage-number {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 4px;
+    font-family: var(--ff-display);
+  }
+  .th-stage-name {
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--white);
+    font-family: var(--ff-display);
+    line-height: 1.1;
+  }
+  .th-stage-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 3px;
+    line-height: 1.3;
+  }
+  .th-stage-bar {
+    height: 3px;
+    border-radius: 2px;
+    margin-top: 10px;
+  }
+
+  /* ─── TABLE ROWS ─── */
+  .table-row {
+    display: grid;
+    grid-template-columns: 180px repeat(5, 1fr);
+    border-top: 1px solid var(--ink-20);
+  }
+  .row-label {
+    padding: 20px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--oc-25);
+    border-right: 1px solid var(--ink-20);
+  }
+  .row-label-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .row-label-text {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+    font-family: var(--ff-display);
+    line-height: 1.35;
+  }
+  .row-cell {
+    padding: 20px 20px;
+    border-left: 1px solid var(--ink-20);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink);
+    vertical-align: top;
+  }
+  .row-cell ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0;
+  }
+  .row-cell ul li {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    font-size: 13px;
+  }
+  .row-cell ul li::before {
+    content: '→';
+    color: var(--ink-60);
+    flex-shrink: 0;
+    font-size: 11px;
+    margin-top: 3px;
+  }
+
+  /* ─── EMOTION ROW ─── */
+  .emotion-row .row-cell { background: var(--cream); }
+  .emotion-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .emotion-emoji { font-size: 18px; }
+  .emotion-name {
+    font-size: 12px;
+    font-weight: 700;
+    font-family: var(--ff-display);
+  }
+  .emotion-bar-wrap {
+    height: 6px;
+    background: var(--ink-20);
+    border-radius: 3px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+  .emotion-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+  .emotion-desc {
+    font-size: 12px;
+    color: var(--ink-60);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  /* ─── OPPORTUNITY CELLS ─── */
+  .opp-cell { position: relative; }
+  .opp-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 100px;
+    margin-bottom: 8px;
+    font-family: var(--ff-display);
+    letter-spacing: 0.02em;
+  }
+  .opp-tag.high    { background: #FFF1CC; color: #8A6200; border: 1px solid #FFD966; }
+  .opp-tag.medium  { background: #E8F5F2; color: #1A6B5A; border: 1px solid #9DD9CE; }
+  .opp-tag.watch   { background: #F5E8E8; color: #8A2020; border: 1px solid #DDA0A0; }
+
+  /* ─── PAIN CELLS ─── */
+  .pain-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    margin-bottom: 8px;
+  }
+  .pain-item:last-child { margin-bottom: 0; }
+  .pain-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--coral);
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+  .pain-text { font-size: 13px; line-height: 1.5; }
+  .pain-text strong { font-weight: 600; }
+
+  /* ─── TOUCH POINT CELLS ─── */
+  .tp-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 6px;
+    border: 1px solid var(--ink-20);
+    background: var(--cream);
+    margin: 2px 2px 2px 0;
+    vertical-align: middle;
+    font-family: var(--ff-display);
+    color: var(--ink);
+  }
+
+  /* ─── ACTIONS ROW ─── */
+  .action-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .action-item {
+    font-size: 13px;
+    line-height: 1.5;
+    padding-left: 14px;
+    position: relative;
+  }
+  .action-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 8px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+  }
+
+  /* ─── OPPORTUNITIES SECTION ─── */
+  .opportunities-section {
+    margin-top: 8px;
+  }
+  .opp-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--ff-display);
+  }
+  .opp-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--ink-20);
+  }
+  .opp-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .opp-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 18px 20px;
+    border: 1px solid var(--ink-20);
+    box-shadow: var(--shadow-sm);
+  }
+  .opp-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .opp-card-icon {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .opp-card-stage {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    font-family: var(--ff-display);
+  }
+  .opp-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    font-family: var(--ff-display);
+    color: var(--ink);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .opp-card-desc {
+    font-size: 12px;
+    color: var(--ink-60);
+    line-height: 1.6;
+  }
+  .opp-card-priority {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: var(--ff-display);
+  }
+
+  /* ─── EMOTION JOURNEY LINE ─── */
+  .emotion-journey-section {
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--ink-20);
+    padding: 32px 36px;
+    margin-bottom: 32px;
+  }
+  .ej-title {
+    font-size: 14px;
+    font-weight: 700;
+    font-family: var(--ff-display);
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .ej-sub {
+    font-size: 13px;
+    color: var(--ink-60);
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+  .ej-chart {
+    position: relative;
+    height: 110px;
+  }
+  .ej-labels {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin-top: 8px;
+    text-align: center;
+  }
+  .ej-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink-60);
+    font-family: var(--ff-display);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  /* ─── SECTION DIVIDER ─── */
+  .section-header {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+    margin: 40px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--ff-display);
+  }
+  .section-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--ink-20);
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    background: var(--ink);
+    padding: 32px 48px;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    line-height: 1.6;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .main { padding: 32px 20px 60px; }
+    .header { padding: 40px 20px 36px; }
+    .persona-nav { padding: 0 12px; }
+    .table-header, .table-row {
+      grid-template-columns: 130px repeat(5, 1fr);
+    }
+    .opp-cards { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 650px) {
+    .table-header, .table-row {
+      grid-template-columns: 1fr;
+    }
+    .row-label { border-right: none; border-bottom: 1px solid var(--ink-20); }
+    .th-stage { border-top: 1px solid rgba(255,255,255,0.07); border-left: none; }
+    .row-cell { border-left: none; border-top: 1px solid var(--ink-20); }
+  }
+
+  /* ─── ANIMATIONS ─── */
+  .journey-panel.active { animation: fadeIn 0.3s ease both; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ─── COLOR OVERRIDES PER PERSONA ─── */
+  [data-persona="marcus"] .persona-summary-archetype { color: var(--teal); }
+  [data-persona="marcus"] .action-item::before { background: var(--teal); }
+  [data-persona="priya"]  .persona-summary-archetype { color: var(--coral); }
+  [data-persona="priya"]  .action-item::before { background: var(--coral); }
+  [data-persona="tomas"]  .persona-summary-archetype { color: var(--amber); }
+  [data-persona="tomas"]  .action-item::before { background: var(--amber); }
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<header class="header">
+  <div class="header-label">User Journey Maps · Opencare · 2026</div>
+  <h1 class="header-title">Patient <em>Journey Maps</em></h1>
+  <p class="header-sub">Five-stage journey from awareness to retention, mapped across three distinct patient archetypes. Each journey captures touchpoints, emotions, pain points, and design opportunities.</p>
+  <div class="header-meta">
+    <div class="header-badge"><span></span> 3 patient personas</div>
+    <div class="header-badge"><span></span> 5 journey stages</div>
+    <div class="header-badge"><span></span> Based on 350K+ patient surveys</div>
+    <div class="header-badge"><span></span> References: Funnel, Results Page &amp; Patient App</div>
+  </div>
+</header>
+
+<!-- ─── PERSONA TABS ─── -->
+<nav class="persona-nav" role="tablist">
+  <button class="persona-tab marcus active" role="tab" aria-selected="true" onclick="switchPersona('marcus', this)">
+    <div class="tab-avatar-dot">🧑‍💼</div>
+    <div class="tab-label-group">
+      <span class="tab-overline">Persona 01 · Insurance Maximizer</span>
+      Marcus Chen
+    </div>
+  </button>
+  <button class="persona-tab priya" role="tab" aria-selected="false" onclick="switchPersona('priya', this)">
+    <div class="tab-avatar-dot">👩‍💻</div>
+    <div class="tab-label-group">
+      <span class="tab-overline">Persona 02 · Anxious Avoider</span>
+      Priya Nair
+    </div>
+  </button>
+  <button class="persona-tab tomas" role="tab" aria-selected="false" onclick="switchPersona('tomas', this)">
+    <div class="tab-avatar-dot">👨‍🔧</div>
+    <div class="tab-label-group">
+      <span class="tab-overline">Persona 03 · Reactive Booker</span>
+      Tomás Rivera
+    </div>
+  </button>
+</nav>
+
+<!-- ─── MAIN ─── -->
+<main class="main">
+
+<!-- ════════════════════════════════════════════════════════
+     MARCUS CHEN — Insurance Maximizer
+════════════════════════════════════════════════════════ -->
+<section class="journey-panel active" id="panel-marcus" data-persona="marcus">
+
+  <div class="persona-summary">
+    <div class="persona-summary-avatar" style="background:#DDF0EE;">🧑‍💼</div>
+    <div class="persona-summary-info">
+      <div class="persona-summary-archetype">Persona 01 · The Insurance Maximizer</div>
+      <div class="persona-summary-name">Marcus Chen, 34 — Chicago, IL</div>
+      <p class="persona-summary-quote">"I have $1,500 in Delta Dental PPO benefits. I need an in-network dentist near my office, strong reviews, available at lunch. I won't book until all three boxes are ticked."</p>
+    </div>
+    <div class="persona-summary-chips">
+      <span class="summary-chip">PPO Insurance</span>
+      <span class="summary-chip">High tech savvy</span>
+      <span class="summary-chip">Mobile-first</span>
+      <span class="summary-chip">Last visit: 14 months ago</span>
+      <span class="summary-chip">Q4 urgency</span>
+    </div>
+  </div>
+
+  <!-- Emotion Journey SVG -->
+  <div class="emotion-journey-section">
+    <div class="ej-title">Emotional Curve — Marcus</div>
+    <div class="ej-sub">Confidence level throughout the journey. Marcus starts cautiously, builds as insurance is confirmed, dips if he hits friction (outdated listings, vague costs), recovers post-appointment.</div>
+    <div class="ej-chart">
+      <svg viewBox="0 0 900 100" width="100%" height="100" preserveAspectRatio="none" style="overflow:visible;">
+        <defs>
+          <linearGradient id="grad-m" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#25A186;stop-opacity:0.15"/>
+            <stop offset="100%" style="stop-color:#25A186;stop-opacity:0.05"/>
+          </linearGradient>
+        </defs>
+        <!-- Grid lines -->
+        <line x1="0" y1="25" x2="900" y2="25" stroke="#E1ECF3" stroke-width="1"/>
+        <line x1="0" y1="50" x2="900" y2="50" stroke="#E1ECF3" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="0" y1="75" x2="900" y2="75" stroke="#E1ECF3" stroke-width="1"/>
+        <!-- Stage dividers -->
+        <line x1="180" y1="0" x2="180" y2="100" stroke="#E1ECF3" stroke-width="1"/>
+        <line x1="360" y1="0" x2="360" y2="100" stroke="#E1ECF3" stroke-width="1"/>
+        <line x1="540" y1="0" x2="540" y2="100" stroke="#E1ECF3" stroke-width="1"/>
+        <line x1="720" y1="0" x2="720" y2="100" stroke="#E1ECF3" stroke-width="1"/>
+        <!-- Emotion path: starts neutral(50), rises to awareness(30), stays focused(35), dips concern(60), relieves(25), settles(30) -->
+        <path d="M 0,55 C 40,50 80,45 180,38 C 240,33 300,35 360,35 C 420,35 460,55 540,60 C 590,62 640,30 720,28 C 780,26 850,32 900,30"
+              fill="url(#grad-m)" stroke="none"/>
+        <path d="M 0,55 C 40,50 80,45 180,38 C 240,33 300,35 360,35 C 420,35 460,55 540,60 C 590,62 640,30 720,28 C 780,26 850,32 900,30"
+              fill="none" stroke="#25A186" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Emotion points -->
+        <circle cx="0" cy="55" r="5" fill="#25A186"/>
+        <circle cx="180" cy="38" r="5" fill="#25A186"/>
+        <circle cx="360" cy="35" r="5" fill="#25A186"/>
+        <circle cx="540" cy="60" r="5" fill="#F37E6D"/>
+        <circle cx="720" cy="28" r="5" fill="#25A186"/>
+        <circle cx="900" cy="30" r="5" fill="#25A186"/>
+        <!-- Labels above -->
+        <text x="0" y="46" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#70858A" text-anchor="middle">Neutral</text>
+        <text x="180" y="29" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#25A186" text-anchor="middle">Hopeful</text>
+        <text x="360" y="26" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#25A186" text-anchor="middle">Focused</text>
+        <text x="540" y="50" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#C45E74" text-anchor="middle">Anxious</text>
+        <text x="720" y="19" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#25A186" text-anchor="middle">Relieved</text>
+        <text x="900" y="21" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#25A186" text-anchor="right">Satisfied</text>
+      </svg>
+    </div>
+    <div class="ej-labels">
+      <div class="ej-label">Conscience</div>
+      <div class="ej-label">Assessment</div>
+      <div class="ej-label">Consideration</div>
+      <div class="ej-label">Engage</div>
+      <div class="ej-label">Retention</div>
+    </div>
+  </div>
+
+  <!-- Journey Table -->
+  <div class="journey-table">
+
+    <!-- Header -->
+    <div class="table-header">
+      <div class="th-row-label">Journey Rows</div>
+      <div class="th-stage">
+        <div class="th-stage-number">Stage 01</div>
+        <div class="th-stage-name">Conscience</div>
+        <div class="th-stage-sub">Trigger &amp; Awareness</div>
+        <div class="th-stage-bar" style="background:var(--s1-accent);opacity:0.7;"></div>
+      </div>
+      <div class="th-stage">
+        <div class="th-stage-number">Stage 02</div>
+        <div class="th-stage-name">Assessment</div>
+        <div class="th-stage-sub">Research &amp; Filtering</div>
+        <div class="th-stage-bar" style="background:var(--s2-accent);opacity:0.7;"></div>
+      </div>
+      <div class="th-stage">
+        <div class="th-stage-number">Stage 03</div>
+        <div class="th-stage-name">Consideration</div>
+        <div class="th-stage-sub">Evaluation &amp; Compare</div>
+        <div class="th-stage-bar" style="background:var(--s3-accent);opacity:0.7;"></div>
+      </div>
+      <div class="th-stage">
+        <div class="th-stage-number">Stage 04</div>
+        <div class="th-stage-name">Engage</div>
+        <div class="th-stage-sub">Book &amp; Visit</div>
+        <div class="th-stage-bar" style="background:var(--s4-accent);opacity:0.7;"></div>
+      </div>
+      <div class="th-stage">
+        <div class="th-stage-number">Stage 05</div>
+        <div class="th-stage-name">Retention</div>
+        <div class="th-stage-sub">Post-visit &amp; Loyalty</div>
+        <div class="th-stage-bar" style="background:var(--s5-accent);opacity:0.7;"></div>
+      </div>
+    </div>
+
+    <!-- SCENARIO ROW -->
+    <div class="table-row">
+      <div class="row-label">
+        <div class="row-label-icon">🎬</div>
+        <div class="row-label-text">Scenario</div>
+      </div>
+      <div class="row-cell" style="background:var(--s1-bg);">
+        Q4 arrives. Marcus realises his $1,500 Delta Dental PPO benefit resets in January and he's used none of it. He commits to booking a cleaning and check-up before year-end.
+      </div>
+      <div class="row-cell" style="background:var(--s2-bg);">
+        He opens Google on his iPhone and searches "dentist near the Loop that takes Delta Dental PPO." He's done this before and been burned by outdated listings, so he's braced for friction.
+      </div>
+      <div class="row-cell" style="background:var(--s3-bg);">
+        He lands on Opencare. The insurance filter is his first move. He then compares 2–3 in-network practices by rating and distance, reading 5–10 reviews per dentist before shortlisting.
+      </div>
+      <div class="row-cell" style="background:var(--s4-bg);">
+        He submits a new patient request (NPR) at 9:30pm from his phone — outside business hours. He expects a quick response. He goes to his lunchtime appointment and the experience matches expectations.
+      </div>
+      <div class="row-cell" style="background:var(--s5-bg);">
+        Appointment done. He gets a receipt. He expects a reminder for his 6-month follow-up and ideally a one-click rebooking. He may refer a colleague if the app makes it effortless.
+      </div>
+    </div>
+
+    <!-- TOUCHPOINTS ROW -->
+    <div class="table-row">
+      <div class="row-label">
+        <div class="row-label-icon">📍</div>
+        <div class="row-label-text">Touch&shy;points</div>
+      </div>
+      <div class="row-cell">
+        <span class="tp-chip">🔔 Insurance renewal email</span>
+        <span class="tp-chip">📅 Calendar (year-end)</span>
+        <span class="tp-chip">💬 Colleague conversation</span>
+      </div>
+      <div class="row-cell">
+        <span class="tp-chip">🔍 Google Search</span>
+        <span class="tp-chip">🔵 Delta Dental Portal</span>
+        <span class="tp-chip">⭐ Yelp / Zocdoc</span>
+        <span class="tp-chip">📍 Google Maps</span>
+        <span class="tp-chip">🟢 Opencare Welcome Step</span>
+      </div>
+      <div class="row-cell">
+        <span class="tp-chip">🟢 Opencare Funnel (insurance + location steps)</span>
+        <span class="tp-chip">📋 Results Page — filter by insurance</span>
+        <span class="tp-chip">⭐ Dentist profile + reviews</span>
+        <span class="tp-chip">🗺 Distance / map view</span>
+      </div>
+      <div class="row-cell">
+        <span class="tp-chip">📝 New Patient Request form</span>
+        <span class="tp-chip">📱 Patient App (NPR status)</span>
+        <span class="tp-chip">📧 Practice confirmation email</span>
+        <span class="tp-chip">📞 Practice call (if needed)</span>
+        <span class="tp-chip">🦷 In-office visit</span>
+      </div>
+      <div class="row-cell">
+        <span class="tp-chip">📧 Post-visit summary email</span>
+        <span class="tp-chip">📱 Patient App (appointment history)</span>
+        <span class="tp-chip">⭐ Review request</span>
+        <span class="tp-chip">🔔 6-month reminder</span>
+      </div>
+    </div>
+
+    <!-- ACTIONS ROW -->
+    <div class="table-row">
+      <div class="row-label">
+        <div class="row-label-icon">🖱️</div>
+        <div class="row-label-text">User Actions</div>
+      </div>
+      <div class="row-cell">
+        <div class="action-list">
+          <div class="action-item">Checks insurance card and annual benefit balance</div>
+          <div class="action-item">Decides to act before benefit resets (Q4 urgency)</div>
+          <div class="action-item">Opens Safari on iPhone, starts Google search</div>
+        </div>
+      </div>
+      <div class="row-cell">
+        <div class="action-list">
+          <div class="action-item">Searches "dentists near Loop that accept Delta Dental PPO"</div>
+          <div class="action-item">Scans insurer portal — finds listing inaccurate or outdated</div>
+          <div class="action-item">Clicks on Opencare from Google results</div>
+          <div class="action-item">Enters work address on Welcome Step</div>
+          <div class="action-item">Selects "Delta Dental PPO" in insurance step of funnel</div>
+        </div>
+      </div>
+      <div class="row-cell">
+        <div class="action-list">
+          <div class="action-item">Applies insurance filter on Results Page</div>
+          <div class="action-item">Filters by distance — sorts by nearest to office</div>
+          <div class="action-item">Opens 2–3 dentist profiles, reads reviews</div>
+          <div class="action-item">Checks availability — looks for Thursday lunchtimes</div>
+          <div class="action-item">Verifies "in-network" badge on profile page</div>
+        </div>
+      </div>
+      <div class="row-cell">
+        <div class="action-list">
+          <div class="action-item">Submits NPR at ~9:30pm via mobile</div>
+          <div class="action-item">Checks patient app for confirmation status</div>
+          <div class="action-item">Practice calls next morning to confirm</div>
+          <div class="action-item">Attends lunchtime appointment</div>
+          <div class="action-item">Pays (ideally $0 for cleaning if in-network)</div>
+        </div>
+      </div>
+      <div class="row-cell">
+        <div class="action-list">
+          <div class="action-item">Receives appointment summary &amp; receipt</div>
+          <div class="action-item">Views upcoming visit schedule in app</div>
+          <div class="action-item">Leaves review if prompted and experience was good</div>
+          <div class="action-item">Considers rebooking 6-month follow-up</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMOTIONS ROW -->
+    <div class="table-row emotion-row">
+      <div class="row-label">
+        <div class="row-label-icon">💭</div>
+        <div class="row-label-text">Emotions &amp; Mindset</div>
+      </div>
+      <div class="row-cell">
+        <div class="emotion-label">
+          <span class="emotion-emoji">😐</span>
+          <span class="emotion-name" style="color:#5B6D73;">Neutral → Motivated</span>
+        </div>
+        <div class="emotion-desc">"I've been putting this off, but I'm going to lose money if I don't act." Financially driven urgency, but no anxiety about the dental visit itself.</div>
+        <div class="emotion-bar-wrap"><div class="emotion-bar" style="width:50%;background:#B3C6D0;"></div></div>
+      </div>
+      <div class="row-cell">
+        <div class="emotion-label">
+          <span class="emotion-emoji">😤</span>
+          <span class="emotion-name" style="color:#C45E74;">Frustrated → Cautious</span>
+        </div>
+        <div class="emotion-desc">"I've been burned by out-of-date insurance info before. I'm not booking anywhere until I'm 100% sure they're in-network." Heightened skepticism at this stage.</div>
+        <div class="emotion-bar-wrap"><div class="emotion-bar" style="width:45%;background:#E8BFC8;"></div></div>
+      </div>
+      <div class="row-cell">
+        <div class="emotion-label">
+          <span class="emotion-emoji">🔍</span>
+          <span class="emotion-name" style="color:#7B5EC4;">Analytical → Focused</span>
+        </div>
+        <div class="emotion-desc">"OK, this looks promising. Let me verify the insurance, check the reviews, confirm the location." Task-oriented, comparing options methodically before committing.</div>
+        <div class="emotion-bar-wrap"><div class="emotion-bar" style="width:65%;background:#CABFE8;"></div></div>
+      </div>
+      <div class="row-cell">
+        <div class="emotion-label">
+          <span class="emotion-emoji">⏳</span>
+          <span class="emotion-name" style="color:#C45E74;">Impatient → Relieved</span>
+        </div>
+        <div class="emotion-desc">"I submitted at night — when will they confirm?" Dip in confidence during the wait period. Strong relief when confirmation comes promptly. Post-visit: validated his research.</div>
+        <div class="emotion-bar-wrap"><div class="emotion-bar" style="width:55%;background:#E8BFC8;"></div></div>
+      </div>
+      <div class="row-cell">
+        <div class="emotion-label">
+          <span class="emotion-emoji">✅</span>
+          <span class="emotion-name" style="color:#25A186;">Satisfied → Loyal</span>
+        </div>
+        <div class="emotion-desc">"Good dentist, zero surprise billing, experience matched the reviews." If the app sends a timely 6-month reminder, Marcus will rebook without any external trigger.</div>
+        <div class="emotion-bar-wrap"><div class="emotion-bar" style="width:85%;background:var(--teal-light);"></div></div>
+      </div>
+    </div>
+
+    <!-- PAIN POINTS ROW -->
+    <div class="table-row">
+      <div class="row-label">
+        <div class="row-label-icon">⚠️</div>
+        <div class="row-label-text">Pain Points</div>
+      </div>
+      <div class="row-cell">
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">No clear trigger within Opencare — re-acquisition relies on external memory or year-end urgency</div></div>
+      </div>
+      <div class="row-cell">
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text"><strong>Inaccurate in-network listings</strong> on insurance portals and competitor directories erode trust pre-Opencare</div></div>
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">Confusing insurance jargon — "participating provider" vs "in-network" creates uncertainty</div></div>
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">54% of booking requests happen after hours — friction if confirmation is slow</div></div>
+      </div>
+      <div class="row-cell">
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">Results page doesn't always clearly distinguish PPO vs HMO coverage</div></div>
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">No upfront cost estimate for a standard cleaning at the selected practice</div></div>
+      </div>
+      <div class="row-cell">
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text"><strong>Post-NPR silence</strong> — patient app shows "pending" status with no ETA, creating uncertainty</div></div>
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">Practice confirmation call may not come until next business morning</div></div>
+      </div>
+      <div class="row-cell">
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">No proactive 6-month rebooking nudge — Marcus will wait for an external reminder</div></div>
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">Review request buried or generic — low conversion rate</div></div>
+      </div>
+    </div>
+
+    <!-- OPPORTUNITIES ROW -->
+    <div class="table-row">
+      <div class="row-label">
+        <div class="row-label-icon">💡</div>
+        <div class="row-label-text">Oppor&shy;tunities</div>
+      </div>
+      <div class="row-cell opp-cell">
+        <div class="opp-tag high">🔥 High impact</div>
+        <p style="font-size:13px;">Email Marcus in October with "Your benefits reset in January — book now." Personalised benefit-expiry reminder drives re-entry into the funnel.</p>
+      </div>
+      <div class="row-cell opp-cell">
+        <div class="opp-tag high">🔥 High impact</div>
+        <p style="font-size:13px;">Surface a verified "in-network confirmed" badge on the Welcome Step and early funnel screens — reduce the primary trust barrier before the results page.</p>
+      </div>
+      <div class="row-cell opp-cell">
+        <div class="opp-tag high">🔥 High impact</div>
+        <p style="font-size:13px;">Add a "<strong>Est. out-of-pocket cost: $0</strong> for cleaning with Delta Dental PPO" label on each results card. Address the #1 concern before Marcus has to ask.</p>
+      </div>
+      <div class="row-cell opp-cell">
+        <div class="opp-tag medium">✅ Quick win</div>
+        <p style="font-size:13px;">Show real-time NPR status with an estimated response window ("Practices typically respond within 2 hours during business hours") in the patient app.</p>
+      </div>
+      <div class="row-cell opp-cell">
+        <div class="opp-tag high">🔥 High impact</div>
+        <p style="font-size:13px;">One-tap 6-month rebooking from the post-visit confirmation screen. Marcus wants to set it and forget it. Tie into his benefits reset calendar.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Detailed Opportunities -->
+  <div class="section-header">Design Opportunities — Marcus Chen</div>
+  <div class="opp-cards">
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#E8F5F2;">💸</div>
+        <div>
+          <div class="opp-card-stage" style="color:#1A6B5A;">Stage 01 + 05 · Conscience + Retention</div>
+        </div>
+      </div>
+      <div class="opp-card-title">Benefit Expiry Re-engagement Campaign</div>
+      <div class="opp-card-desc">Trigger a personalised email to Marcus-type users in October/November showing remaining benefit balance and time left to use it. This creates urgency without relying on chance.</div>
+      <div class="opp-card-priority"><span style="color:#1A6B5A;">●</span> Q4 conversion driver</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#E8F5F2;">🔒</div>
+        <div>
+          <div class="opp-card-stage" style="color:#1A6B5A;">Stage 02 + 03 · Assessment + Consideration</div>
+        </div>
+      </div>
+      <div class="opp-card-title">Verified In-Network Badge System</div>
+      <div class="opp-card-desc">Replace "accepts insurance" with a dynamically verified "In-network: Delta Dental PPO ✓" badge that is updated in real-time. This is Marcus's #1 trust signal and eliminates his biggest drop-off reason.</div>
+      <div class="opp-card-priority"><span style="color:#1A6B5A;">●</span> Reduces pre-booking abandonment</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#FFF1CC;">🧾</div>
+        <div>
+          <div class="opp-card-stage" style="color:#8A6200;">Stage 03 · Consideration</div>
+        </div>
+      </div>
+      <div class="opp-card-title">Upfront Cost Estimate on Results Cards</div>
+      <div class="opp-card-desc">Show "Est. cost for cleaning: $0 with your plan" directly on results cards and dentist profiles. Removes the final objection Marcus needs to overcome before booking.</div>
+      <div class="opp-card-priority"><span style="color:#8A6200;">●</span> High conversion lift</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#EBF5F3;">📲</div>
+        <div>
+          <div class="opp-card-stage" style="color:#25A186;">Stage 04 · Engage</div>
+        </div>
+      </div>
+      <div class="opp-card-title">Post-NPR Status Clarity in Patient App</div>
+      <div class="opp-card-desc">After submitting an NPR outside business hours, show a clear timeline: "Your request was sent. Practices respond within 2 business hours on weekdays." Eliminates the confidence dip that causes cancellations.</div>
+      <div class="opp-card-priority"><span style="color:#25A186;">●</span> Post-NPR anxiety reduction</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#F3F0EB;">🔁</div>
+        <div>
+          <div class="opp-card-stage" style="color:#A68A25;">Stage 05 · Retention</div>
+        </div>
+      </div>
+      <div class="opp-card-title">One-tap 6-Month Rebooking</div>
+      <div class="opp-card-desc">At the end of the appointment summary screen, offer "Rebook your 6-month clean → [Date picker]". Marcus will use his remaining benefit next year and rebook without Opencare having to re-acquire him.</div>
+      <div class="opp-card-priority"><span style="color:#A68A25;">●</span> Retention flywheel activation</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#EEF3F7;">⏰</div>
+        <div>
+          <div class="opp-card-stage" style="color:#4B7FA6;">Stage 02 · Assessment</div>
+        </div>
+      </div>
+      <div class="opp-card-title">After-Hours NPR with Smart Scheduling</div>
+      <div class="opp-card-desc">54% of requests come after hours. Implement a smart time-slot pre-selection where Marcus indicates his preferred window (e.g., "Thursday lunch"), so the practice can confirm immediately without a back-and-forth call.</div>
+      <div class="opp-card-priority"><span style="color:#4B7FA6;">●</span> After-hours booking experience</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     PRIYA NAIR — Anxious Avoider
+════════════════════════════════════════════════════════ -->
+<section class="journey-panel" id="panel-priya" data-persona="priya">
+
+  <div class="persona-summary">
+    <div class="persona-summary-avatar" style="background:#FDECEA;">👩‍💻</div>
+    <div class="persona-summary-info">
+      <div class="persona-summary-archetype">Persona 02 · The Anxious Avoider</div>
+      <div class="persona-summary-name">Priya Nair, 28 — Toronto, ON</div>
+      <p class="persona-summary-quote">"I haven't been in 2 years. I know I need to go. But I need to feel completely safe with this dentist before I ever sit in that chair. I'll read every review. I need to know they're gentle."</p>
+    </div>
+    <div class="persona-summary-chips">
+      <span class="summary-chip">No insurance (OOP)</span>
+      <span class="summary-chip">High dental anxiety</span>
+      <span class="summary-chip">Trust-driven</span>
+      <span class="summary-chip">Last visit: 2+ years ago</span>
+      <span class="summary-chip">Chat-preferred</span>
+    </div>
+  </div>
+
+  <!-- Emotion Journey SVG -->
+  <div class="emotion-journey-section">
+    <div class="ej-title">Emotional Curve — Priya</div>
+    <div class="ej-sub">Priya's journey is marked by prolonged anxiety, slow trust-building, and sharp emotional peaks. The key inflection is the moment she feels "safe" — everything before is about earning that moment.</div>
+    <div class="ej-chart">
+      <svg viewBox="0 0 900 100" width="100%" height="100" preserveAspectRatio="none" style="overflow:visible;">
+        <defs>
+          <linearGradient id="grad-p" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#F37E6D;stop-opacity:0.15"/>
+            <stop offset="60%" style="stop-color:#F37E6D;stop-opacity:0.08"/>
+            <stop offset="100%" style="stop-color:#25A186;stop-opacity:0.1"/>
+          </linearGradient>
+        </defs>
+        <line x1="0" y1="25" x2="900" y2="25" stroke="#E1ECF3" stroke-width="1"/>
+        <line x1="0" y1="50" x2="900" y2="50" stroke="#E1ECF3" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="0" y1="75" x2="900" y2="75" stroke="#E1ECF3" stroke-width="1"/>
+        <line x1="180" y1="0" x2="180" y2="100" stroke="#E1ECF3" stroke-width="1"/>
+        <line x1="360" y1="0" x2="360" y2="100" stroke="#E1ECF3" stroke-width="1"/>
+        <line x1="540" y1="0" x2="540" y2="100" stroke="#E1ECF3" stroke-width="1"/>
+        <line x1="720" y1="0" x2="720" y2="100" stroke="#E1ECF3" stroke-width="1"/>
+        <!-- High anxiety start, slow improvement, dip at silence, recovery post-visit -->
+        <path d="M 0,70 C 40,68 80,65 180,72 C 220,74 260,62 360,55 C 420,50 470,78 540,80 C 580,80 630,55 720,35 C 780,22 850,25 900,20"
+              fill="url(#grad-p)" stroke="none"/>
+        <path d="M 0,70 C 40,68 80,65 180,72 C 220,74 260,62 360,55 C 420,50 470,78 540,80 C 580,80 630,55 720,35 C 780,22 850,25 900,20"
+              fill="none" stroke="#F37E6D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="0" cy="70" r="5" fill="#F37E6D"/>
+        <circle cx="180" cy="72" r="5" fill="#F37E6D"/>
+        <circle cx="360" cy="55" r="5" fill="#F9A208"/>
+        <circle cx="540" cy="80" r="5" fill="#C45E74"/>
+        <circle cx="720" cy="35" r="5" fill="#25A186"/>
+        <circle cx="900" cy="20" r="5" fill="#25A186"/>
+        <text x="0" y="84" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#C45E74" text-anchor="middle">Avoidant</text>
+        <text x="180" y="86" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#C45E74" text-anchor="middle">Apprehensive</text>
+        <text x="360" y="46" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#A68A25" text-anchor="middle">Cautious Hope</text>
+        <text x="540" y="94" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#C45E74" text-anchor="middle">Anxious</text>
+        <text x="720" y="26" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#25A186" text-anchor="middle">Proud</text>
+        <text x="900" y="12" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#25A186" text-anchor="end">Empowered</text>
+      </svg>
+    </div>
+    <div class="ej-labels">
+      <div class="ej-label">Conscience</div>
+      <div class="ej-label">Assessment</div>
+      <div class="ej-label">Consideration</div>
+      <div class="ej-label">Engage</div>
+      <div class="ej-label">Retention</div>
+    </div>
+  </div>
+
+  <div class="journey-table">
+    <div class="table-header">
+      <div class="th-row-label">Journey Rows</div>
+      <div class="th-stage">
+        <div class="th-stage-number">Stage 01</div>
+        <div class="th-stage-name">Conscience</div>
+        <div class="th-stage-sub">Trigger &amp; Awareness</div>
+        <div class="th-stage-bar" style="background:#F37E6D;opacity:0.7;"></div>
+      </div>
+      <div class="th-stage">
+        <div class="th-stage-number">Stage 02</div>
+        <div class="th-stage-name">Assessment</div>
+        <div class="th-stage-sub">Research &amp; Filtering</div>
+        <div class="th-stage-bar" style="background:var(--s2-accent);opacity:0.7;"></div>
+      </div>
+      <div class="th-stage">
+        <div class="th-stage-number">Stage 03</div>
+        <div class="th-stage-name">Consideration</div>
+        <div class="th-stage-sub">Trust-Building</div>
+        <div class="th-stage-bar" style="background:var(--s3-accent);opacity:0.7;"></div>
+      </div>
+      <div class="th-stage">
+        <div class="th-stage-number">Stage 04</div>
+        <div class="th-stage-name">Engage</div>
+        <div class="th-stage-sub">Book &amp; Prepare</div>
+        <div class="th-stage-bar" style="background:var(--s4-accent);opacity:0.7;"></div>
+      </div>
+      <div class="th-stage">
+        <div class="th-stage-number">Stage 05</div>
+        <div class="th-stage-name">Retention</div>
+        <div class="th-stage-sub">Recovery &amp; Loyalty</div>
+        <div class="th-stage-bar" style="background:var(--s5-accent);opacity:0.7;"></div>
+      </div>
+    </div>
+
+    <div class="table-row">
+      <div class="row-label">
+        <div class="row-label-icon">🎬</div>
+        <div class="row-label-text">Scenario</div>
+      </div>
+      <div class="row-cell" style="background:var(--s1-bg);">
+        A persistent dull ache that Priya has been mentioning to her roommate for months finally tips her into action. She knows she needs to go but fear has been the dominant force. The ache breaks through the avoidance.
+      </div>
+      <div class="row-cell" style="background:var(--s2-bg);">
+        She goes to Reddit (r/askTO) first — peer recommendations over ads. She finds Opencare recommended. She then spends 30–45 minutes reading reviews, looking at office photos, and checking Instagram before clicking through.
+      </div>
+      <div class="row-cell" style="background:var(--s3-bg);">
+        On Opencare, she reads the Funnel step "How do you feel about visiting?" and feels seen. She applies a "gentle / anxiety-friendly" filter. She reads 15–20 reviews looking for mentions of specific dentists' names and bedside manner.
+      </div>
+      <div class="row-cell" style="background:var(--s4-bg);">
+        She submits the NPR and immediately feels the post-submission silence as threatening. She checks the patient app repeatedly. Any delay amplifies anxiety. Once confirmed and she's met the dentist, the experience is transformative.
+      </div>
+      <div class="row-cell" style="background:var(--s5-bg);">
+        Post-appointment Priya is a different person — she's proud she went. If the experience was as gentle as promised, she becomes a loyal evangelist and will refer others. She needs a 6-month nudge that meets her emotional register.
+      </div>
+    </div>
+
+    <div class="table-row">
+      <div class="row-label">
+        <div class="row-label-icon">📍</div>
+        <div class="row-label-text">Touch&shy;points</div>
+      </div>
+      <div class="row-cell">
+        <span class="tp-chip">🦷 Physical symptom (ache)</span>
+        <span class="tp-chip">💬 Roommate conversation</span>
+        <span class="tp-chip">🔴 Reddit r/askTO</span>
+        <span class="tp-chip">💡 Opencare Reddit mention</span>
+      </div>
+      <div class="row-cell">
+        <span class="tp-chip">🔍 Google Search</span>
+        <span class="tp-chip">📸 Instagram (practice photos)</span>
+        <span class="tp-chip">🗺 Google Maps (street view)</span>
+        <span class="tp-chip">🟢 Opencare Welcome Step</span>
+      </div>
+      <div class="row-cell">
+        <span class="tp-chip">❓ Funnel — anxiety question step</span>
+        <span class="tp-chip">📋 Results Page — anxiety filter</span>
+        <span class="tp-chip">⭐ Review content (specific names)</span>
+        <span class="tp-chip">📸 Office photos on profile</span>
+        <span class="tp-chip">🤖 Opencare AI / chat support</span>
+      </div>
+      <div class="row-cell">
+        <span class="tp-chip">📝 NPR submission</span>
+        <span class="tp-chip">📱 Patient App (status check)</span>
+        <span class="tp-chip">📧 Practice confirmation</span>
+        <span class="tp-chip">📋 Pre-visit preparation info</span>
+        <span class="tp-chip">🦷 In-office visit</span>
+      </div>
+      <div class="row-cell">
+        <span class="tp-chip">✅ Post-visit email</span>
+        <span class="tp-chip">📱 Patient App</span>
+        <span class="tp-chip">💬 WhatsApp (tells roommate)</span>
+        <span class="tp-chip">⭐ Review write-up</span>
+      </div>
+    </div>
+
+    <div class="table-row">
+      <div class="row-label">
+        <div class="row-label-icon">🖱️</div>
+        <div class="row-label-text">User Actions</div>
+      </div>
+      <div class="row-cell">
+        <div class="action-list">
+          <div class="action-item">Physical symptom finally overrides avoidance behaviour</div>
+          <div class="action-item">Asks roommate — seeks peer validation before acting</div>
+          <div class="action-item">Goes to Reddit for peer recommendations (not ads)</div>
+          <div class="action-item">Finds Opencare mentioned in r/askTO thread</div>
+        </div>
+      </div>
+      <div class="row-cell">
+        <div class="action-list">
+          <div class="action-item">Spends 45 min on Instagram and Google Maps viewing practice photos</div>
+          <div class="action-item">Reads reviews on multiple platforms — filters for "gentle" mentions</div>
+          <div class="action-item">Opens Opencare, enters address</div>
+          <div class="action-item">Selects "I'm a bit nervous" in the anxiety question funnel step</div>
+        </div>
+      </div>
+      <div class="row-cell">
+        <div class="action-list">
+          <div class="action-item">Applies anxiety-friendly filter on results page</div>
+          <div class="action-item">Reads 15–20 reviews on selected practice — looks for dentist names in reviews</div>
+          <div class="action-item">Views all office photos in gallery</div>
+          <div class="action-item">Asks Opencare chat: "Do you have dentists known for being gentle?"</div>
+          <div class="action-item">Cross-references with Google reviews before deciding</div>
+        </div>
+      </div>
+      <div class="row-cell">
+        <div class="action-list">
+          <div class="action-item">Submits NPR — immediately looks for confirmation</div>
+          <div class="action-item">Checks patient app multiple times looking for status update</div>
+          <div class="action-item">Asks chat "I submitted but haven't heard back — is that normal?"</div>
+          <div class="action-item">Re-reads what to expect at first visit in preparation</div>
+          <div class="action-item">Attends appointment — experiences gentle, unhurried care</div>
+        </div>
+      </div>
+      <div class="row-cell">
+        <div class="action-list">
+          <div class="action-item">Tells roommate she went — emotional moment</div>
+          <div class="action-item">Leaves a detailed, empathetic review praising dentist by name</div>
+          <div class="action-item">Shares practice on WhatsApp with a friend who has similar anxiety</div>
+          <div class="action-item">Books 6-month follow-up without hesitation now that trust is established</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-row emotion-row">
+      <div class="row-label">
+        <div class="row-label-icon">💭</div>
+        <div class="row-label-text">Emotions &amp; Mindset</div>
+      </div>
+      <div class="row-cell">
+        <div class="emotion-label">
+          <span class="emotion-emoji">😟</span>
+          <span class="emotion-name" style="color:#C45E74;">Avoidant → Reluctant</span>
+        </div>
+        <div class="emotion-desc">"I need to go but the thought of it makes me anxious. The ache is bad enough now that I can't ignore it." The trigger is physical discomfort, not rational planning.</div>
+        <div class="emotion-bar-wrap"><div class="emotion-bar" style="width:20%;background:#E8BFC8;"></div></div>
+      </div>
+      <div class="row-cell">
+        <div class="emotion-label">
+          <span class="emotion-emoji">🔦</span>
+          <span class="emotion-name" style="color:#A68A25;">Apprehensive → Searching</span>
+        </div>
+        <div class="emotion-desc">"Maybe if I find the right dentist it won't be so bad." Cautious optimism during research. She's processing slowly under stress — vague info makes anxiety worse.</div>
+        <div class="emotion-bar-wrap"><div class="emotion-bar" style="width:30%;background:#E0D2A0;"></div></div>
+      </div>
+      <div class="row-cell">
+        <div class="emotion-label">
+          <span class="emotion-emoji">🌱</span>
+          <span class="emotion-name" style="color:#7B5EC4;">Guarded → Building Trust</span>
+        </div>
+        <div class="emotion-desc">"This profile feels different. The reviews mention Dr. [Name] by name and say she's incredibly gentle. This could work." This is the pivotal moment — she's allowing herself to imagine a positive experience.</div>
+        <div class="emotion-bar-wrap"><div class="emotion-bar" style="width:50%;background:#CABFE8;"></div></div>
+      </div>
+      <div class="row-cell">
+        <div class="emotion-label">
+          <span class="emotion-emoji">😰</span>
+          <span class="emotion-name" style="color:#C45E74;">Anxious → Transformed</span>
+        </div>
+        <div class="emotion-desc">Post-NPR silence creates acute anxiety. Once confirmed, stress begins to reduce. Day of appointment: nerves high. During/after visit with a gentle dentist: transformative relief and pride.</div>
+        <div class="emotion-bar-wrap"><div class="emotion-bar" style="width:40%;background:#E8BFC8;"></div></div>
+      </div>
+      <div class="row-cell">
+        <div class="emotion-label">
+          <span class="emotion-emoji">🌟</span>
+          <span class="emotion-name" style="color:#25A186;">Proud → Evangelistic</span>
+        </div>
+        <div class="emotion-desc">"I actually did it. And it was fine." Priya's post-visit state is unique — she's not just satisfied, she's proud of herself. If the platform nurtures this, she becomes a powerful word-of-mouth source.</div>
+        <div class="emotion-bar-wrap"><div class="emotion-bar" style="width:90%;background:var(--teal-light);"></div></div>
+      </div>
+    </div>
+
+    <div class="table-row">
+      <div class="row-label">
+        <div class="row-label-icon">⚠️</div>
+        <div class="row-label-text">Pain Points</div>
+      </div>
+      <div class="row-cell">
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">No proactive re-engagement — Priya needs to be physically symptomatic before she'll act</div></div>
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">58% of patients report dental anxiety; no gentle onboarding in awareness phase</div></div>
+      </div>
+      <div class="row-cell">
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">Competitor directories show sterile, impersonal listings — no photo/atmosphere preview</div></div>
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">Opencare funnel doesn't explicitly signal "we understand anxiety" until mid-funnel</div></div>
+      </div>
+      <div class="row-cell">
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text"><strong>Anxiety filter not prominent enough</strong> — buried behind generic filters on Results Page</div></div>
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">Can't gauge bedside manner from profile alone — photos, video, and "by name" reviews needed</div></div>
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">Fear of judgement for 2-year gap — needs explicit "judgement-free" messaging</div></div>
+      </div>
+      <div class="row-cell">
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text"><strong>Post-NPR silence is the #1 drop-off risk</strong> for Priya — usability testing (Feb 2026) confirmed she felt "lost" in the patient app post-submission</div></div>
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">No pre-visit "what to expect" content to reduce day-of anxiety</div></div>
+      </div>
+      <div class="row-cell">
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">Generic post-visit email doesn't acknowledge the emotional significance of her milestone</div></div>
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">No prompt to refer anxious friends — her network is Opencare's most valuable audience</div></div>
+      </div>
+    </div>
+
+    <div class="table-row">
+      <div class="row-label">
+        <div class="row-label-icon">💡</div>
+        <div class="row-label-text">Oppor&shy;tunities</div>
+      </div>
+      <div class="row-cell opp-cell">
+        <div class="opp-tag watch">🎯 Strategic</div>
+        <p style="font-size:13px;">Launch "anxiety-friendly" content on Reddit and Instagram — organic content addressing "how to find a gentle dentist" positions Opencare as the answer at the very top of the funnel.</p>
+      </div>
+      <div class="row-cell opp-cell">
+        <div class="opp-tag high">🔥 High impact</div>
+        <p style="font-size:13px;">Make the "How do you feel about visiting the dentist?" funnel question the gateway to a dedicated anxiety-first track, with copy, imagery, and results filtering tuned entirely to nervous patients.</p>
+      </div>
+      <div class="row-cell opp-cell">
+        <div class="opp-tag high">🔥 High impact</div>
+        <p style="font-size:13px;">Promote anxiety-friendly dentist as a primary badge on results cards. Allow patients to filter results to "anxiety-friendly" as the first visible filter — not buried in a secondary menu.</p>
+      </div>
+      <div class="row-cell opp-cell">
+        <div class="opp-tag high">🔥 High impact</div>
+        <p style="font-size:13px;">Post-NPR: send an empathetic, personalised message ("We know waiting can feel stressful — here's exactly what happens next") with a step-by-step explanation and first visit walkthrough.</p>
+      </div>
+      <div class="row-cell opp-cell">
+        <div class="opp-tag medium">✅ Quick win</div>
+        <p style="font-size:13px;">Post-visit: acknowledge the milestone. "You did it 🎉 We know that wasn't easy." Referral prompt aimed at other anxious patients. Priya's word-of-mouth is gold for this segment.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">Design Opportunities — Priya Nair</div>
+  <div class="opp-cards">
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#FDECEA;">🌿</div>
+        <div><div class="opp-card-stage" style="color:#C45E74;">Stage 01 · Conscience</div></div>
+      </div>
+      <div class="opp-card-title">Anxiety-Aware Awareness Content</div>
+      <div class="opp-card-desc">Content specifically for the avoider segment: "It's OK if you haven't been in a while." Organic Reddit/social presence targeting people researching "how to find a dentist when you're scared."</div>
+      <div class="opp-card-priority"><span style="color:#C45E74;">●</span> Top-of-funnel for 58% of anxious patients</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#EBF5F3;">🎭</div>
+        <div><div class="opp-card-stage" style="color:#25A186;">Stage 02–03 · Assessment + Consideration</div></div>
+      </div>
+      <div class="opp-card-title">Anxiety-First Funnel Track</div>
+      <div class="opp-card-desc">When a user selects "I'm nervous" in the funnel, branch them into an anxiety-first track: adjusted copy tone, "gentle dentist" as top filter, pre-populated anxiety-friendly practices. Make Priya feel this product was built for her.</div>
+      <div class="opp-card-priority"><span style="color:#25A186;">●</span> Funnel personalisation</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#EEF3F7;">🤝</div>
+        <div><div class="opp-card-stage" style="color:#7B5EC4;">Stage 03 · Consideration</div></div>
+      </div>
+      <div class="opp-card-title">Gentle Dentist Certification Badge</div>
+      <div class="opp-card-desc">Introduce a verified "Anxiety-Friendly" badge for dentists with proven track records in nervous patient care, based on review analysis. Make it visually prominent on results cards and profiles — Priya's primary filter.</div>
+      <div class="opp-card-priority"><span style="color:#7B5EC4;">●</span> Trust signal for 42% who cite rating as top factor</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#FDECEA;">📬</div>
+        <div><div class="opp-card-stage" style="color:#C45E74;">Stage 04 · Engage</div></div>
+      </div>
+      <div class="opp-card-title">Empathetic Post-NPR Communication</div>
+      <div class="opp-card-desc">Immediately after NPR submission, send a warm, specific message: "We know waiting can feel stressful. Here's exactly what happens next, step by step." Include a first-visit walkthrough and a direct message option to the practice.</div>
+      <div class="opp-card-priority"><span style="color:#C45E74;">●</span> Critical drop-off prevention</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#F3F0EB;">🎉</div>
+        <div><div class="opp-card-stage" style="color:#A68A25;">Stage 05 · Retention</div></div>
+      </div>
+      <div class="opp-card-title">Milestone-Aware Post-Visit Screen</div>
+      <div class="opp-card-desc">"You did it — and we know that wasn't easy for everyone." A personalised post-visit moment acknowledging the emotional significance. Followed by a referral prompt targeting "someone who's been avoiding the dentist too."</div>
+      <div class="opp-card-priority"><span style="color:#A68A25;">●</span> Priya's network = anxious patients</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#EBF5F3;">📖</div>
+        <div><div class="opp-card-stage" style="color:#25A186;">Stage 03–04 · Consideration + Engage</div></div>
+      </div>
+      <div class="opp-card-title">Pre-Visit Preparation Content</div>
+      <div class="opp-card-desc">A "What happens at your first visit?" guide in the patient app — broken into clear, gentle steps. Helps Priya understand exactly what to expect so nothing surprises her. Shown automatically after NPR confirmation.</div>
+      <div class="opp-card-priority"><span style="color:#25A186;">●</span> Day-of anxiety reduction</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     TOMÁS RIVERA — Reactive Booker
+════════════════════════════════════════════════════════ -->
+<section class="journey-panel" id="panel-tomas" data-persona="tomas">
+
+  <div class="persona-summary">
+    <div class="persona-summary-avatar" style="background:#FFF4DC;">👨‍🔧</div>
+    <div class="persona-summary-info">
+      <div class="persona-summary-archetype">Persona 03 · The Reactive Booker</div>
+      <div class="persona-summary-name">Tomás Rivera, 41 — Houston, TX</div>
+      <p class="persona-summary-quote">"My tooth has been killing me since yesterday. I need someone today or tomorrow — I don't care about picking the perfect dentist. I just need someone credible and available now."</p>
+    </div>
+    <div class="persona-summary-chips">
+      <span class="summary-chip">Emergency booking</span>
+      <span class="summary-chip">Speed-driven</span>
+      <span class="summary-chip">Late-night mobile</span>
+      <span class="summary-chip">Moderate tech savvy</span>
+      <span class="summary-chip">Parent / busy schedule</span>
+    </div>
+  </div>
+
+  <div class="emotion-journey-section">
+    <div class="ej-title">Emotional Curve — Tomás</div>
+    <div class="ej-sub">Tomás enters in acute pain — his emotional trajectory is steep. Fast availability confirmation creates rapid relief. Any friction (slow confirmation, confusing flow) directly amplifies pain-driven frustration.</div>
+    <div class="ej-chart">
+      <svg viewBox="0 0 900 100" width="100%" height="100" preserveAspectRatio="none" style="overflow:visible;">
+        <defs>
+          <linearGradient id="grad-t" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#F9A208;stop-opacity:0.2"/>
+            <stop offset="100%" style="stop-color:#25A186;stop-opacity:0.1"/>
+          </linearGradient>
+        </defs>
+        <line x1="0" y1="25" x2="900" y2="25" stroke="#E1ECF3" stroke-width="1"/>
+        <line x1="0" y1="50" x2="900" y2="50" stroke="#E1ECF3" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="0" y1="75" x2="900" y2="75" stroke="#E1ECF3" stroke-width="1"/>
+        <line x1="180" y1="0" x2="180" y2="100" stroke="#E1ECF3" stroke-width="1"/>
+        <line x1="360" y1="0" x2="360" y2="100" stroke="#E1ECF3" stroke-width="1"/>
+        <line x1="540" y1="0" x2="540" y2="100" stroke="#E1ECF3" stroke-width="1"/>
+        <line x1="720" y1="0" x2="720" y2="100" stroke="#E1ECF3" stroke-width="1"/>
+        <path d="M 0,85 C 30,83 80,82 180,75 C 220,70 280,65 360,50 C 410,40 470,62 540,65 C 580,66 640,42 720,25 C 780,18 850,20 900,18"
+              fill="url(#grad-t)" stroke="none"/>
+        <path d="M 0,85 C 30,83 80,82 180,75 C 220,70 280,65 360,50 C 410,40 470,62 540,65 C 580,66 640,42 720,25 C 780,18 850,20 900,18"
+              fill="none" stroke="#F9A208" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="0" cy="85" r="5" fill="#F9A208"/>
+        <circle cx="180" cy="75" r="5" fill="#F9A208"/>
+        <circle cx="360" cy="50" r="5" fill="#F9A208"/>
+        <circle cx="540" cy="65" r="5" fill="#C45E74"/>
+        <circle cx="720" cy="25" r="5" fill="#25A186"/>
+        <circle cx="900" cy="18" r="5" fill="#25A186"/>
+        <text x="0" y="99" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#C45E74" text-anchor="start">In Pain</text>
+        <text x="180" y="89" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#C45E74" text-anchor="middle">Urgent</text>
+        <text x="360" y="41" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#A68A25" text-anchor="middle">Focused</text>
+        <text x="540" y="78" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#C45E74" text-anchor="middle">Frustrated</text>
+        <text x="720" y="16" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#25A186" text-anchor="middle">Relieved</text>
+        <text x="900" y="10" font-size="9" font-family="Helvetica Neue,sans-serif" fill="#25A186" text-anchor="end">Grateful</text>
+      </svg>
+    </div>
+    <div class="ej-labels">
+      <div class="ej-label">Conscience</div>
+      <div class="ej-label">Assessment</div>
+      <div class="ej-label">Consideration</div>
+      <div class="ej-label">Engage</div>
+      <div class="ej-label">Retention</div>
+    </div>
+  </div>
+
+  <div class="journey-table">
+    <div class="table-header">
+      <div class="th-row-label">Journey Rows</div>
+      <div class="th-stage">
+        <div class="th-stage-number">Stage 01</div>
+        <div class="th-stage-name">Conscience</div>
+        <div class="th-stage-sub">Trigger (Acute)</div>
+        <div class="th-stage-bar" style="background:#F9A208;opacity:0.7;"></div>
+      </div>
+      <div class="th-stage">
+        <div class="th-stage-number">Stage 02</div>
+        <div class="th-stage-name">Assessment</div>
+        <div class="th-stage-sub">Speed-First Search</div>
+        <div class="th-stage-bar" style="background:var(--s2-accent);opacity:0.7;"></div>
+      </div>
+      <div class="th-stage">
+        <div class="th-stage-number">Stage 03</div>
+        <div class="th-stage-name">Consideration</div>
+        <div class="th-stage-sub">Fast Evaluation</div>
+        <div class="th-stage-bar" style="background:var(--s3-accent);opacity:0.7;"></div>
+      </div>
+      <div class="th-stage">
+        <div class="th-stage-number">Stage 04</div>
+        <div class="th-stage-name">Engage</div>
+        <div class="th-stage-sub">Emergency Booking</div>
+        <div class="th-stage-bar" style="background:var(--s4-accent);opacity:0.7;"></div>
+      </div>
+      <div class="th-stage">
+        <div class="th-stage-number">Stage 05</div>
+        <div class="th-stage-name">Retention</div>
+        <div class="th-stage-sub">Convert to Regular</div>
+        <div class="th-stage-bar" style="background:var(--s5-accent);opacity:0.7;"></div>
+      </div>
+    </div>
+
+    <div class="table-row">
+      <div class="row-label">
+        <div class="row-label-icon">🎬</div>
+        <div class="row-label-text">Scenario</div>
+      </div>
+      <div class="row-cell" style="background:var(--s1-bg);">
+        Tomás wakes up with a worsening toothache. He doesn't have a regular dentist. He's tried calling practices before and been put on hold or told the next available is in 3 weeks. He needs someone today or tomorrow.
+      </div>
+      <div class="row-cell" style="background:var(--s2-bg);">
+        At 10pm from his phone, he Googles "emergency dentist near me Houston open tomorrow." He finds several options. He opens Opencare — the "Dental Emergency" funnel path immediately addresses his situation and raises his confidence.
+      </div>
+      <div class="row-cell" style="background:var(--s3-bg);">
+        He moves through the emergency funnel rapidly. He has low tolerance for multi-step filtering. He needs to see availability immediately. The first credible result with "available this week" visible wins his booking.
+      </div>
+      <div class="row-cell" style="background:var(--s4-bg);">
+        He submits an NPR at 10pm. He falls asleep. His biggest risk: if confirmation doesn't come by 8am, he calls a different practice. Speed of response is the critical variable — the practice that responds first gets the booking.
+      </div>
+      <div class="row-cell" style="background:var(--s5-bg);">
+        Pain resolved. Tomás is grateful. But he will forget Opencare exists unless he's given a strong reason to return — specifically, a path to becoming a regular patient at this dentist now that trust is established.
+      </div>
+    </div>
+
+    <div class="table-row">
+      <div class="row-label">
+        <div class="row-label-icon">📍</div>
+        <div class="row-label-text">Touch&shy;points</div>
+      </div>
+      <div class="row-cell">
+        <span class="tp-chip">🦷 Acute toothache</span>
+        <span class="tp-chip">📱 Google Search (mobile)</span>
+        <span class="tp-chip">🟢 Opencare — Dental Emergency path</span>
+      </div>
+      <div class="row-cell">
+        <span class="tp-chip">🚨 Emergency funnel step</span>
+        <span class="tp-chip">❓ "Nature of dental emergency" step</span>
+        <span class="tp-chip">📋 Results Page</span>
+        <span class="tp-chip">⏰ Availability filter</span>
+      </div>
+      <div class="row-cell">
+        <span class="tp-chip">📋 Dentist profile (quick scan)</span>
+        <span class="tp-chip">⭐ Star rating (glance-level)</span>
+        <span class="tp-chip">📅 Availability calendar</span>
+        <span class="tp-chip">✅ "Available this week" badge</span>
+      </div>
+      <div class="row-cell">
+        <span class="tp-chip">📝 NPR (late night mobile)</span>
+        <span class="tp-chip">📱 Patient App</span>
+        <span class="tp-chip">📞 Practice call (morning)</span>
+        <span class="tp-chip">🦷 Emergency appointment</span>
+      </div>
+      <div class="row-cell">
+        <span class="tp-chip">📧 Post-visit email</span>
+        <span class="tp-chip">📱 Patient App</span>
+        <span class="tp-chip">🔔 "Become a regular" prompt</span>
+        <span class="tp-chip">📅 Follow-up booking</span>
+      </div>
+    </div>
+
+    <div class="table-row">
+      <div class="row-label">
+        <div class="row-label-icon">🖱️</div>
+        <div class="row-label-text">User Actions</div>
+      </div>
+      <div class="row-cell">
+        <div class="action-list">
+          <div class="action-item">Toothache worsens to point of forcing action</div>
+          <div class="action-item">Googles "emergency dentist near me" on mobile at ~10pm</div>
+          <div class="action-item">Clicks Opencare — selects "Yes" to dental emergency question</div>
+        </div>
+      </div>
+      <div class="row-cell">
+        <div class="action-list">
+          <div class="action-item">Moves through emergency funnel — fast-taps options</div>
+          <div class="action-item">Enters location, selects "As soon as possible" for timing</div>
+          <div class="action-item">Scans results for availability badges</div>
+          <div class="action-item">Skips detailed review reading — just needs a credible option available this week</div>
+        </div>
+      </div>
+      <div class="row-cell">
+        <div class="action-list">
+          <div class="action-item">Selects first result with high star rating + availability shown</div>
+          <div class="action-item">Glances at reviews (2–3 max)</div>
+          <div class="action-item">Checks distance — within 20 min is acceptable</div>
+          <div class="action-item">Does not compare multiple practices — first credible one wins</div>
+        </div>
+      </div>
+      <div class="row-cell">
+        <div class="action-list">
+          <div class="action-item">Submits NPR at ~10pm from phone, falls asleep</div>
+          <div class="action-item">Checks phone first thing in the morning for confirmation</div>
+          <div class="action-item">If no reply by 8am, starts calling other practices</div>
+          <div class="action-item">Attends appointment — pain resolved</div>
+        </div>
+      </div>
+      <div class="row-cell">
+        <div class="action-list">
+          <div class="action-item">Feels intense gratitude immediately post-treatment</div>
+          <div class="action-item">Reads post-visit email quickly</div>
+          <div class="action-item">Books a follow-up cleaning if prompted with one-tap flow</div>
+          <div class="action-item">Otherwise, forgets about dental care until next incident</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-row emotion-row">
+      <div class="row-label">
+        <div class="row-label-icon">💭</div>
+        <div class="row-label-text">Emotions &amp; Mindset</div>
+      </div>
+      <div class="row-cell">
+        <div class="emotion-label">
+          <span class="emotion-emoji">😣</span>
+          <span class="emotion-name" style="color:#C45E74;">Pain → Desperation</span>
+        </div>
+        <div class="emotion-desc">"This hurts and I need to fix it now." Zero consideration phase — Tomás is not researching, he's triaging. The emotional state is acute discomfort driving impulse action.</div>
+        <div class="emotion-bar-wrap"><div class="emotion-bar" style="width:10%;background:#E8BFC8;"></div></div>
+      </div>
+      <div class="row-cell">
+        <div class="emotion-label">
+          <span class="emotion-emoji">⚡</span>
+          <span class="emotion-name" style="color:#A68A25;">Urgent → Scanning</span>
+        </div>
+        <div class="emotion-desc">"Please just show me someone available soon." Impatient with any friction. If the emergency path on Opencare is clear and fast, his confidence rises quickly. If it's slow, he bounces immediately.</div>
+        <div class="emotion-bar-wrap"><div class="emotion-bar" style="width:35%;background:#E0D2A0;"></div></div>
+      </div>
+      <div class="row-cell">
+        <div class="emotion-label">
+          <span class="emotion-emoji">🎯</span>
+          <span class="emotion-name" style="color:#7B5EC4;">Task-Focused</span>
+        </div>
+        <div class="emotion-desc">"OK — this one has 4.8 stars, available tomorrow, 15 min away. Done." Tomás is satisficing, not optimising. First credible option that meets his threshold wins. He's not comparing.</div>
+        <div class="emotion-bar-wrap"><div class="emotion-bar" style="width:55%;background:#CABFE8;"></div></div>
+      </div>
+      <div class="row-cell">
+        <div class="emotion-label">
+          <span class="emotion-emoji">😴</span>
+          <span class="emotion-name" style="color:#C45E74;">Waiting → Anxious</span>
+        </div>
+        <div class="emotion-desc">He goes to bed. The window before 8am is everything — morning is when the decision to cancel or continue gets made. A fast confirmation email/SMS is the highest-leverage action Opencare can take here.</div>
+        <div class="emotion-bar-wrap"><div class="emotion-bar" style="width:40%;background:#E8BFC8;"></div></div>
+      </div>
+      <div class="row-cell">
+        <div class="emotion-label">
+          <span class="emotion-emoji">😌</span>
+          <span class="emotion-name" style="color:#25A186;">Relief → Gratitude</span>
+        </div>
+        <div class="emotion-desc">"Thank god that's over." High emotional gratitude that fades fast. The post-visit window is extremely short — any retention action must happen within 24–48 hours of treatment.</div>
+        <div class="emotion-bar-wrap"><div class="emotion-bar" style="width:75%;background:var(--teal-light);"></div></div>
+      </div>
+    </div>
+
+    <div class="table-row">
+      <div class="row-label">
+        <div class="row-label-icon">⚠️</div>
+        <div class="row-label-text">Pain Points</div>
+      </div>
+      <div class="row-cell">
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">No Opencare presence until Tomás is in acute pain — no preventative re-engagement channel exists for him</div></div>
+      </div>
+      <div class="row-cell">
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">Emergency funnel must be fast — any multi-step friction here causes immediate bounce</div></div>
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">Availability is invisible until NPR is submitted — Tomás can't see open slots without contacting the practice</div></div>
+      </div>
+      <div class="row-cell">
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text"><strong>No live availability calendar</strong> — "Available this week" is a badge, not a confirmed slot. Creates expectation mismatch</div></div>
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">Tomás will not compare options — if the first result looks off, he exits to Google rather than scrolling</div></div>
+      </div>
+      <div class="row-cell">
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text"><strong>Response speed is everything</strong> — 54% of requests come after hours. If the practice doesn't respond by 8am, Tomás is already calling someone else</div></div>
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">Patient app post-NPR state gives no urgency signal to the practice</div></div>
+      </div>
+      <div class="row-cell">
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text"><strong>Retention gap</strong> — gratitude is high but fades fast. No proactive path from emergency visit to regular patient relationship</div></div>
+        <div class="pain-item"><div class="pain-dot"></div><div class="pain-text">Generic post-visit email doesn't capitalise on Tomás's peak gratitude moment</div></div>
+      </div>
+    </div>
+
+    <div class="table-row">
+      <div class="row-label">
+        <div class="row-label-icon">💡</div>
+        <div class="row-label-text">Oppor&shy;tunities</div>
+      </div>
+      <div class="row-cell opp-cell">
+        <div class="opp-tag medium">✅ Quick win</div>
+        <p style="font-size:13px;">Surface Opencare in "emergency dentist near me" paid and organic results. The entry point for Tomás is a crisis — Opencare must be visible exactly at that moment.</p>
+      </div>
+      <div class="row-cell opp-cell">
+        <div class="opp-tag high">🔥 High impact</div>
+        <p style="font-size:13px;">Streamline the emergency funnel to 3 steps or fewer: location → emergency type → results. Every extra question is a drop-off point for Tomás. Speed is the UX principle.</p>
+      </div>
+      <div class="row-cell opp-cell">
+        <div class="opp-tag high">🔥 High impact</div>
+        <p style="font-size:13px;">Show real-time or near-real-time availability on results cards. "Next available: Tomorrow 9am" is the single most valuable data point for Tomás — make it the primary info hierarchy element.</p>
+      </div>
+      <div class="row-cell opp-cell">
+        <div class="opp-tag high">🔥 High impact</div>
+        <p style="font-size:13px;">Implement an automated after-hours NPR alert to practices: "Emergency request received — confirm by 8am to secure booking." Puts urgency on the practice side to respond before Tomás wakes up.</p>
+      </div>
+      <div class="row-cell opp-cell">
+        <div class="opp-tag high">🔥 High impact</div>
+        <p style="font-size:13px;">Within 24h post-visit: "Emergency handled ✓ Want to make [Practice] your regular dentist?" One-tap to schedule a cleaning. Converts the emergency entry point into a long-term retention relationship.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">Design Opportunities — Tomás Rivera</div>
+  <div class="opp-cards">
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#FFF4DC;">⚡</div>
+        <div><div class="opp-card-stage" style="color:#A68A25;">Stage 02 · Assessment</div></div>
+      </div>
+      <div class="opp-card-title">Ultra-Fast Emergency Funnel</div>
+      <div class="opp-card-desc">Compress the emergency path to 3 maximum steps. Location → Nature of emergency → Results. Pre-fill available slots on the results card. Tomás is in pain — every extra tap is a risk of bounce.</div>
+      <div class="opp-card-priority"><span style="color:#A68A25;">●</span> Emergency UX is a competitive moat</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#EBF5F3;">📅</div>
+        <div><div class="opp-card-stage" style="color:#25A186;">Stage 03 · Consideration</div></div>
+      </div>
+      <div class="opp-card-title">Real-Time Availability on Results Cards</div>
+      <div class="opp-card-desc">"Next available: Tomorrow 9am — book now." This single data point is Tomás's decision trigger. It should be the first thing visible on a results card for emergency seekers, above the dentist's name.</div>
+      <div class="opp-card-priority"><span style="color:#25A186;">●</span> #1 filter for reactive bookers</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#FDECEA;">🚨</div>
+        <div><div class="opp-card-stage" style="color:#C45E74;">Stage 04 · Engage</div></div>
+      </div>
+      <div class="opp-card-title">After-Hours Emergency Practice Alert</div>
+      <div class="opp-card-desc">When an emergency NPR comes in outside business hours, auto-send an urgent notification to the practice: "Emergency booking requested — patient is in pain and will contact other practices if not confirmed by 8am." Shifts urgency to the supply side.</div>
+      <div class="opp-card-priority"><span style="color:#C45E74;">●</span> Critical retention before morning</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#F3F0EB;">🔄</div>
+        <div><div class="opp-card-stage" style="color:#A68A25;">Stage 05 · Retention</div></div>
+      </div>
+      <div class="opp-card-title">Emergency-to-Regular Patient Conversion</div>
+      <div class="opp-card-desc">Within 24–48 hours post-visit: "Your emergency is handled. Make [Practice Name] your regular dentist?" with a one-tap booking for a routine clean in 3–6 months. Converts the highest-urgency entry point into long-term retention.</div>
+      <div class="opp-card-priority"><span style="color:#A68A25;">●</span> Emergency → retained patient flywheel</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#EEF3F7;">📊</div>
+        <div><div class="opp-card-stage" style="color:#4B7FA6;">Stage 04 · Engage</div></div>
+      </div>
+      <div class="opp-card-title">NPR Response SLA Tracking</div>
+      <div class="opp-card-desc">Track and surface practice response times to patients: "This practice typically responds within 1 hour." Builds confidence during the overnight wait and creates accountability incentives for practices to respond faster.</div>
+      <div class="opp-card-priority"><span style="color:#4B7FA6;">●</span> Trust signal during highest-risk window</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-card-icon" style="background:#EBF5F3;">💬</div>
+        <div><div class="opp-card-stage" style="color:#25A186;">All stages · Mobile-First</div></div>
+      </div>
+      <div class="opp-card-title">Mobile-First Emergency Experience</div>
+      <div class="opp-card-desc">100% of Tomás's journey happens on mobile at 10pm. Large tap targets, minimal form fields, SMS confirmation (not just email), and a patient app that shows clear status in one glance. This is table stakes for the reactive booker.</div>
+      <div class="opp-card-priority"><span style="color:#25A186;">●</span> Mobile UX parity for after-hours</div>
+    </div>
+  </div>
+
+</section>
+
+</main>
+
+<!-- ─── FOOTER ─── -->
+<footer class="footer">
+  <p><strong style="color:rgba(255,255,255,0.6);">Opencare — User Journey Maps · 2026</strong><br>
+  Based on: 350K+ patient surveys, usability testing (Feb 2026), Figma Funnel Master file, Results Page, Patient App flows, and the Opencare Patient Personas document.<br>
+  <em>For internal design &amp; strategy use. Figma references used for flow and layout context only — not treated as source of truth.</em></p>
+</footer>
+
+<script>
+  function switchPersona(id, btn) {
+    // Update tabs
+    document.querySelectorAll('.persona-tab').forEach(t => {
+      t.classList.remove('active');
+      t.setAttribute('aria-selected', 'false');
+    });
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+
+    // Update panels
+    document.querySelectorAll('.journey-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + id).classList.add('active');
+
+    // Scroll to top of main
+    document.querySelector('.main').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+
+</body>
+</html>
