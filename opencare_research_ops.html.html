@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Opencare Research Ops</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f7f8fa;color:#1a1a2e;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+header{background:#fff;border-bottom:1px solid #e8eaed;padding:12px 24px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.logo{width:30px;height:30px;flex-shrink:0}
+.logo img{width:30px;height:30px;object-fit:contain}
+h1{font-size:15px;font-weight:600;color:#1a1a2e}
+h1 span{font-size:13px;color:#9ca3af;font-weight:400;margin-left:4px}
+#cnt{margin-left:auto;font-size:11px;color:#6b7280;background:#f3f4f6;padding:3px 10px;border-radius:20px}
+.layout{display:flex;flex:1;overflow:hidden}
+
+/* sidebar */
+aside{width:272px;background:#fff;border-right:1px solid #e8eaed;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.sb-top{padding:10px;display:flex;flex-direction:column;gap:7px;border-bottom:1px solid #f0f0f0;flex-shrink:0}
+.sb-top input{width:100%;border:1px solid #e8eaed;border-radius:8px;padding:7px 11px;font-size:13px;outline:none;font-family:inherit;background:#f9fafb;color:#1a1a2e}
+.sb-top input:focus{border-color:#4f6ef7;background:#fff}
+.fr{display:flex;gap:5px;flex-wrap:wrap}
+.fc{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;border:1px solid #e8eaed;background:#fff;color:#6b7280;cursor:pointer;white-space:nowrap}
+.fc.on{background:#eef2ff;border-color:#c7d2fe;color:#4f6ef7}
+.fc.onP{background:#dbeafe;border-color:#93c5fd;color:#1d4ed8}
+.fc.onPR{background:#d1fae5;border-color:#6ee7b7;color:#065f46}
+#sbList{flex:1;overflow-y:auto;padding:6px}
+.sg{font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.07em;padding:10px 8px 4px}
+.si{padding:9px 11px;border-radius:7px;cursor:pointer;margin-bottom:2px;border:1px solid transparent;transition:all .12s}
+.si:hover{background:#f7f8fa;border-color:#e8eaed}
+.si.on{background:#eef2ff;border-color:#c7d2fe}
+.si-t{font-size:13px;font-weight:500;color:#1a1a2e;margin-bottom:3px}
+.si-m{display:flex;gap:4px;flex-wrap:wrap}
+.si-s{font-size:11px;color:#9ca3af;margin-top:2px}
+.bdg{font-size:10px;font-weight:600;padding:2px 6px;border-radius:20px}
+.bP{background:#dbeafe;color:#1d4ed8}.bPR{background:#d1fae5;color:#065f46}.bB{background:#ede9fe;color:#5b21b6}.bPM{background:#fff7ed;color:#c2410c}
+
+/* main */
+main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+#view{flex:1;overflow-y:auto;padding:24px 28px}
+
+/* welcome */
+.wlc{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;gap:12px}
+.wlc h2{font-size:20px;font-weight:700}
+.wlc p{font-size:14px;color:#6b7280;max-width:420px;line-height:1.6}
+.wstats{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+.wst{background:#fff;border:1px solid #e8eaed;border-radius:10px;padding:10px 18px;text-align:center;transition:all .15s}
+.wst-clickable{cursor:pointer}
+.wst-clickable:hover{border-color:#c7d2fe;background:#eef2ff;transform:translateY(-1px)}
+.wst-n{font-size:20px;font-weight:800;color:#4f6ef7}
+.wst-l{font-size:11px;color:#6b7280;margin-top:1px}
+
+/* artifact shell */
+.aw{max-width:860px;margin:0 auto}
+.ah{border-radius:12px 12px 0 0;padding:24px 28px 20px;color:#fff;position:relative}
+.ahP{background:linear-gradient(135deg,#1d4ed8,#4f6ef7)}
+.ahPR{background:linear-gradient(135deg,#065f46,#059669)}
+.ahB{background:linear-gradient(135deg,#5b21b6,#7c3aed)}
+.ah-ey{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.7;margin-bottom:6px}
+.ah-ti{font-size:24px;font-weight:800;line-height:1.2;margin-bottom:10px}
+.ah-bd{display:flex;gap:7px;flex-wrap:wrap}
+.ah-b{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3)}
+.ah-mt{position:absolute;top:20px;right:24px;font-size:11px;opacity:.6;text-align:right;line-height:1.5}
+.ab{background:#fff;border:1px solid #e8eaed;border-top:none;border-radius:0 0 12px 12px;overflow:hidden}
+
+/* generic sections */
+.sec{padding:18px 24px;border-bottom:1px solid #f0f0f0}
+.sec:last-child{border-bottom:none}
+.sh{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#9ca3af;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.sn{width:18px;height:18px;border-radius:50%;background:#f3f4f6;color:#6b7280;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.stat-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));gap:8px}
+.stat-c{background:#f9fafb;border:1px solid #e8eaed;border-radius:9px;padding:10px 12px}
+.stat-l{font-size:10px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.stat-v{font-size:13px;font-weight:700;color:#1a1a2e}
+.goals{display:flex;flex-direction:column;gap:7px}
+.gi{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#374151}
+.gn{width:22px;height:22px;border-radius:50%;background:#eef2ff;color:#4f6ef7;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{background:#f3f4f6;border:1px solid #e8eaed;border-radius:20px;padding:3px 11px;font-size:12px;color:#374151;font-weight:500}
+.pains,.opps{display:flex;flex-direction:column;gap:7px}
+.pi{display:flex;gap:9px;align-items:flex-start;background:#fff5f5;border:1px solid #fecaca;border-radius:7px;padding:9px 12px;font-size:13px;color:#374151}
+.oi{display:flex;gap:9px;align-items:flex-start;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:9px 12px;font-size:13px;color:#374151}
+.bullets{display:flex;flex-direction:column;gap:5px}
+.bi{display:flex;gap:7px;font-size:13px;color:#374151}
+.bd{color:#c7d2fe;font-size:15px;flex-shrink:0;line-height:1.4}
+.jtbd-b{background:#f9fafb;border:1px solid #e8eaed;border-radius:9px;padding:14px 16px;margin-bottom:8px}
+.jtbd-b:last-child{margin-bottom:0}
+.jr{display:grid;grid-template-columns:76px 1fr;gap:4px 10px;font-size:13px;margin-bottom:5px}
+.jr:last-child{margin-bottom:0}
+.jl{color:#9ca3af;font-weight:600;font-size:11px;text-transform:uppercase;padding-top:2px}
+.empg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.eq{border-radius:9px;padding:12px 14px}
+.eqT{background:#eff6ff;border:1px solid #bfdbfe}.eqF{background:#fdf2f8;border:1px solid #f0abfc}.eqS{background:#f0fdf4;border:1px solid #bbf7d0}.eqD{background:#fffbeb;border:1px solid #fde68a}
+.eqh{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px}
+.eqT .eqh{color:#1d4ed8}.eqF .eqh{color:#a21caf}.eqS .eqh{color:#15803d}.eqD .eqh{color:#b45309}
+.eqi{font-size:12px;color:#374151;margin-bottom:4px;padding-left:9px;position:relative}
+.eqi::before{content:'·';position:absolute;left:0;color:#9ca3af}
+.bpr{display:grid;grid-template-columns:100px 1fr;gap:8px 14px;margin-bottom:7px;font-size:13px;align-items:start}
+.bpl{font-size:10px;font-weight:700;text-transform:uppercase;padding:4px 7px;border-radius:6px;text-align:center;line-height:1.3}
+.lFP{background:#dbeafe;color:#1d4ed8}.lFPR{background:#d1fae5;color:#065f46}.lBS{background:#ede9fe;color:#5b21b6}.lSY{background:#fef3c7;color:#92400e}.lDP{background:#fee2e2;color:#991b1b}
+.ecog{margin-bottom:12px}
+.ecog-t{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#6b7280;margin-bottom:7px}
+.econ{display:flex;flex-wrap:wrap;gap:7px}
+.en{border-radius:9px;padding:7px 12px;font-size:12px;font-weight:600;border:1px solid}
+.enC{background:#eef2ff;border-color:#c7d2fe;color:#3730a3}
+.enS{background:#f0fdf4;border-color:#bbf7d0;color:#14532d}
+.enE{background:#fff7ed;border-color:#fed7aa;color:#7c2d12}
+.afoot{display:flex;flex-wrap:wrap;gap:7px;padding:12px 24px;border-top:1px solid #f0f0f0;background:#fafafa}
+.afs{font-size:11px;color:#6b7280;background:#fff;border:1px solid #e8eaed;padding:2px 9px;border-radius:12px}
+.afa{font-size:12px;color:#92400e;background:#fffbeb;border:1px solid #fde68a;padding:5px 10px;border-radius:7px;width:100%}
+
+/* ── PERSONA RICH STYLES ── */
+.p-tagline{font-size:14px;color:#374151;font-style:italic;line-height:1.6;padding:16px 24px;border-bottom:1px solid #f0f0f0;background:#fafafa}
+.p-rich{font-size:13px;color:#374151;line-height:1.8;white-space:pre-line}
+.p-tools{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+.p-tool{background:#f3f4f6;border:1px solid #e8eaed;border-radius:20px;padding:4px 13px;font-size:12px;color:#374151;font-weight:500}
+.p-insight{background:#eef2ff;border:1px solid #c7d2fe;border-radius:8px;padding:10px 14px;font-size:12px;color:#3730a3;margin-top:4px;line-height:1.5}
+.p-insight strong{font-weight:700}
+.p-cs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+.p-cs-cell{background:#f9fafb;border:1px solid #e8eaed;border-radius:8px;padding:10px 13px}
+.p-cs-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9ca3af;margin-bottom:3px}
+.p-cs-val{font-size:13px;font-weight:600;color:#1a1a2e}
+.p-cs-desc{font-size:13px;color:#374151;line-height:1.6;margin-top:4px;border-top:1px solid #f0f0f0;padding-top:10px}
+.p-goals2{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.p-goal{display:flex;gap:12px;align-items:flex-start}
+.p-goal-num{width:26px;height:26px;border-radius:50%;background:#eef2ff;color:#4f6ef7;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.p-goal-body{}
+.p-goal-title{font-size:13px;font-weight:600;color:#1a1a2e;margin-bottom:2px}
+.p-goal-desc{font-size:12px;color:#6b7280;line-height:1.5}
+.p-why{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:11px 14px;font-size:13px;color:#14532d;margin-top:6px;line-height:1.5}
+.p-why strong{font-weight:700}
+.p-pains2{display:flex;flex-direction:column;gap:10px}
+.p-pain{display:flex;gap:12px;align-items:flex-start;background:#fff5f5;border:1px solid #fecaca;border-radius:9px;padding:12px 14px}
+.p-pain-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.p-pain-body{}
+.p-pain-title{font-size:13px;font-weight:600;color:#1a1a2e;margin-bottom:3px}
+.p-pain-desc{font-size:12px;color:#6b7280;line-height:1.5}
+.p-queries{display:flex;flex-direction:column;gap:7px}
+.p-query{background:#f9fafb;border:1px solid #e8eaed;border-radius:8px;padding:9px 14px;font-size:13px;color:#374151;font-style:italic}
+.p-query::before{content:'"';color:#9ca3af;margin-right:2px}
+.p-query::after{content:'"';color:#9ca3af;margin-left:2px}
+.j-ph{padding:20px 24px;border-bottom:1px solid #f0f0f0}
+.j-pm{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.j-pi{font-size:36px;line-height:1;flex-shrink:0}
+.j-pinfo{flex:1;min-width:180px}
+.j-pname{font-size:17px;font-weight:800;color:#1a1a2e;margin-bottom:2px}
+.j-psub{font-size:12px;color:#6b7280;margin-bottom:8px}
+.j-pq{font-size:13px;color:#374151;font-style:italic;background:#f9fafb;border-left:3px solid #c7d2fe;padding:9px 13px;border-radius:0 7px 7px 0;margin-bottom:9px;line-height:1.6}
+.j-ptags{display:flex;flex-wrap:wrap;gap:5px}
+.j-ptag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;background:#f3f4f6;border:1px solid #e8eaed;color:#374151}
+.j-ec{padding:16px 24px;border-bottom:1px solid #f0f0f0;background:#fafafa}
+.j-ect{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9ca3af;margin-bottom:10px}
+.j-ecr{display:flex;align-items:center}
+.j-ecs{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0}
+.j-ecd{width:11px;height:11px;border-radius:50%;background:#4f6ef7;border:2px solid #fff;box-shadow:0 0 0 2px #c7d2fe}
+.j-ecl{font-size:10px;font-weight:600;color:#374151;text-align:center;line-height:1.2;max-width:70px}
+.j-ecst{font-size:9px;color:#9ca3af;text-align:center;text-transform:uppercase;letter-spacing:.04em}
+.j-ecline{flex:1;height:2px;background:linear-gradient(90deg,#4f6ef7,#7c3aed);margin:0 2px;align-self:flex-start;margin-top:9px}
+.j-tabs{display:flex;border-bottom:1px solid #e8eaed;overflow-x:auto;flex-shrink:0;background:#fff}
+.j-tab{padding:9px 15px;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .12s;flex-shrink:0}
+.j-tab:hover{color:#4f6ef7}
+.j-tab.on{color:#4f6ef7;border-bottom-color:#4f6ef7}
+.j-row{border-bottom:1px solid #f5f5f5;display:grid;grid-template-columns:108px 1fr}
+.j-row:last-of-type{border-bottom:none}
+.j-rl{padding:14px 12px 14px 18px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#9ca3af;background:#fafafa;border-right:1px solid #f0f0f0;display:flex;align-items:flex-start;gap:5px;line-height:1.4}
+.j-ri{font-size:13px}
+.j-rb{padding:14px 18px;font-size:13px;color:#374151;line-height:1.6}
+.j-rb ul{padding-left:15px;margin-top:3px}
+.j-rb li{margin-bottom:3px}
+.j-emo{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;margin-bottom:4px}
+.j-emodesc{font-size:12px;color:#6b7280;font-style:italic;line-height:1.5}
+.j-pc{display:flex;gap:7px;align-items:flex-start;background:#fff5f5;border:1px solid #fecaca;border-radius:7px;padding:8px 11px;font-size:13px;color:#374151;margin-bottom:5px}
+.j-pc:last-child{margin-bottom:0}
+.j-oc{background:#f9fafb;border:1px solid #e8eaed;border-radius:7px;padding:9px 13px;margin-bottom:7px}
+.j-oc:last-child{margin-bottom:0}
+.j-otag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:9px;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.j-otag.high{background:#fef9c3;color:#854d0e}
+.j-otag.quick{background:#dbeafe;color:#1d4ed8}
+.j-otag.strategic{background:#ede9fe;color:#5b21b6}
+.j-otag.default{background:#dcfce7;color:#15803d}
+.j-tps{display:flex;flex-wrap:wrap;gap:5px}
+.j-tp{font-size:12px;background:#f3f4f6;border:1px solid #e8eaed;border-radius:20px;padding:2px 9px;color:#374151}
+.j-do{padding:20px 24px;background:#fafafa;border-top:2px solid #e8eaed}
+.j-dot{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#9ca3af;margin-bottom:14px}
+.j-doc{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.j-dc{background:#fff;border:1px solid #e8eaed;border-radius:9px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.j-dci{font-size:20px}
+.j-dcs{font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.05em}
+.j-dct{font-size:13px;font-weight:700;color:#1a1a2e}
+.j-dcb{font-size:12px;color:#6b7280;line-height:1.5}
+.j-dctag{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:9px;background:#eef2ff;color:#3730a3;margin-top:2px}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#e8eaed;border-radius:3px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" id="logoWrap"></div>
+  <h1>Research Ops Assistant <span>by Opencare</span></h1>
+  <span id="cnt"></span>
+</header>
+<div class="layout">
+  <aside>
+    <div class="sb-top">
+      <input id="srch" placeholder="Search artifacts…" oninput="applyF()"/>
+      <div class="fr" id="typeFR"></div>
+      <div class="fr" id="segFR">
+        <div class="fc on" data-seg="all" onclick="setSeg('all')">All</div>
+        <div class="fc" data-seg="patient" onclick="setSeg('patient')">Patient</div>
+        <div class="fc" data-seg="practice" onclick="setSeg('practice')">Practice</div>
+        <div class="fc" data-seg="both" onclick="setSeg('both')">Both</div>
+      </div>
+    </div>
+    <div id="sbList"></div>
+  </aside>
+  <main><div id="view"></div></main>
+</div>
+
+<script>
+(async()=>{try{const d=await window.fs.readFile('image0.png');const b=new Blob([d],{type:'image/png'});const u=URL.createObjectURL(b);const i=document.createElement('img');i.src=u;i.style.cssText='width:30px;height:30px;object-fit:contain';document.getElementById('logoWrap').appendChild(i);}catch(e){}})();
+
+const LIB=[
+// ── PERSONAS
+{id:'p1',title:'Maya Chen — The Busy Professional',type:'Persona',ct:'patient',v:'v1.2',date:'Mar 2026',
+ tagline:'A high-achieving marketing manager who treats booking a dentist like any other task on her to-do list — she expects it to be fast, digital, and friction-free. If the app slows her down, she closes it.',
+ stats:[{l:'Age',v:'34'},{l:'Location',v:'Toronto, ON 🇨🇦'},{l:'Role',v:'Marketing Manager'},{l:'Tech',v:'High'},{l:'Last Visit',v:'18 mo. ago'},{l:'Insurance',v:'Sun Life PPO'}],
+ secs:[
+  {h:'Context & Background',ly:'rich',body:'Maya works in a fast-paced SaaS company and manages a team of five. Healthcare admin is low on her priority list — she\'ll do it, but only if it\'s fast and painless. She has Sun Life PPO through her employer and knows she has unused benefits, but confirming which dentists accept her plan has always required a phone call she never has time to make.\n\nShe\'s a digital native who expects every service to match the UX quality of the apps she uses daily. She notices friction immediately and has no patience for multi-step processes that could be simpler. No accessibility needs. Primarily English-speaking, occasional French.'},
+  {h:'Tool Stack',ly:'tools',tools:['Google Search','Sun Life Portal','iPhone / Safari','Google Maps','Yelp Reviews','Email (Gmail)'],insight:'63% of Opencare users select "accepts my insurance" as their #1 filter. Maya represents this majority — but she abandons the search the moment confirming insurance requires a phone call.'},
+  {h:'Communication Style',ly:'commstyle',style:[{l:'Tone',v:'Efficient & direct'},{l:'Style',v:'Concise, action-oriented'},{l:'Language',v:'Plain English'},{l:'Channel pref.',v:'Email > SMS'}],desc:'Maya sends short, task-oriented messages. She expects immediate, specific answers. She won\'t read a long reply — she scans for the one sentence that answers her question and ignores the rest.'},
+  {h:'Goals & Motivations',ly:'goals2',goals:[{t:'Confirm Sun Life PPO compatibility upfront',d:'She won\'t book a dentist without verifying insurance first — but she also won\'t make a phone call to do it.'},
+    {t:'Book in under 3 minutes during a lunch break',d:'She has a narrow window. Any flow that takes longer than 3 steps loses her.'},
+    {t:'Access her full appointment history in one place',d:'She wants a single source of truth for all her healthcare appointments — no digging through emails.'},
+    {t:'Trust the clinic is reputable before confirming',d:'She reads 2–3 reviews and checks the rating. If the profile looks thin, she moves on.'}],
+   why:'Sun Life PPO compatibility surfaced at search time — no phone call required. Opencare removes Maya\'s single biggest friction point before she even reaches a profile.'},
+  {h:'Frustrations & Pain Points',ly:'pains2',pains:[{icon:'🔍',t:'Insurance compatibility requires a phone call',d:'Sun Life\'s own portal has outdated listings. Maya has been burned before — she\'s now sceptical of any "accepts insurance" claim she can\'t verify digitally.'},
+    {icon:'📧',t:'Confirmation emails that are basically useless',d:'She receives a booking confirmation with no useful details — no address, no "what to bring", no reminder of what was booked.'},
+    {icon:'⏱',t:'No visibility into wait times or delays',d:'She books a lunchtime slot and has no way to know if the practice is running late. Missing a meeting because of an unannounced delay is a deal-breaker.'},
+    {icon:'📋',t:'Re-entering the same personal info on every booking',d:'Her address, insurance card, and health history are asked for every single time. There\'s no persistent patient profile.'}]},
+  {h:'Example Queries',ly:'queries',queries:['Does this dentist accept Sun Life PPO?','Show me dentists near King & Bay open on Thursdays','What\'s covered under a new patient visit if I have insurance?','Is there any cost for a cleaning if I\'m in-network?','Can I book a 12pm slot? I need to be back at work by 1:30']}
+ ],assumptions:[],sources:['Notion','Monday.com']},
+
+{id:'p2',title:'Marcus Reed — The Insurance Maximizer',type:'Persona',ct:'patient',v:'v1.0',date:'Mar 2026',
+ tagline:'A methodical, cost-conscious professional who won\'t book a dentist without first confirming they\'re in-network — and will compare three practices before committing to one.',
+ stats:[{l:'Age',v:'38'},{l:'Location',v:'Chicago, IL 🇺🇸'},{l:'Role',v:'Project Manager'},{l:'Tech',v:'High'},{l:'Last Visit',v:'14 mo. ago'},{l:'Insurance',v:'Delta Dental PPO'}],
+ secs:[
+  {h:'Context & Background',ly:'rich',body:'Marcus is a first-generation immigrant in a fast-paced product role at a tech startup. He has employer-sponsored Delta Dental PPO and is acutely aware of his annual benefit limits — he knows he has a $1,500 maximum and hasn\'t used any of it this calendar year.\n\nHe applies the same research rigour he uses for any purchase decision to healthcare. He\'s comfortable with digital tools and expects them to surface the information he needs without requiring extra legwork. No significant accessibility needs. He\'s bilingual (English, Mandarin) but navigates healthcare entirely in English.'},
+  {h:'Tool Stack',ly:'tools',tools:['Google Search','Yelp / Zocdoc','Delta Dental Portal','iPhone / Safari','Google Maps','Email (Gmail)'],insight:'63% of Opencare users select "accepts my insurance" as their #1 filter. Marcus represents this majority — and he will abandon any platform that can\'t confirm in-network status before he fills in a form.'},
+  {h:'Communication Style',ly:'commstyle',style:[{l:'Tone',v:'Direct & neutral'},{l:'Style',v:'Concise, task-oriented'},{l:'Language',v:'Layman\'s terms'},{l:'Channel pref.',v:'Email > SMS'}],desc:'Marcus writes short, factual messages. He\'ll ask one specific question per message and expects a direct answer. He dislikes ambiguity and will disengage if responses are vague or full of caveats.'},
+  {h:'Goals & Motivations',ly:'goals2',goals:[{t:'Find a dentist that accepts Delta Dental PPO',d:'He won\'t book anywhere until insurance compatibility is confirmed — ideally with a specific "in-network verified" badge, not just a checkbox.'},
+    {t:'Use his remaining annual benefit before the January reset',d:'Q4 creates real urgency. He knows he has $1,500 he hasn\'t touched and will lose it if he doesn\'t act before year-end.'},
+    {t:'Find a practice within a short commute from his office',d:'He wants a lunchtime slot — the practice needs to be within 15–20 minutes of the Loop or it doesn\'t qualify.'},
+    {t:'Validate quality through reviews before committing',d:'Not the cheapest option, not the closest — the most trustworthy in-network one. Reviews are the tiebreaker.'}],
+   why:'He needs to confirm insurance compatibility upfront — not after booking. Opencare\'s matching algorithm surfaces in-network practices by default, removing his biggest research friction.'},
+  {h:'Frustrations & Pain Points',ly:'pains2',pains:[{icon:'🔍',t:'Outdated in-network listings everywhere',d:'Most dental directories — including his insurer\'s own portal — have inaccurate listings. He\'s shown up to a practice that no longer takes his plan. He won\'t let that happen again.'},
+    {icon:'📄',t:'Confusing insurance jargon',d:'"Participating provider" vs "in-network" vs "preferred provider" — he can never tell what these mean in practice. Ambiguity is a hard stop.'},
+    {icon:'💸',t:'Fear of surprise billing',d:'He doesn\'t trust practices to be transparent about costs upfront. He wants an estimated out-of-pocket cost before he confirms a booking.'},
+    {icon:'🗓',t:'Booking requires a phone call during business hours',d:'His schedule rarely allows for a personal call before 6pm. He needs a fully digital, after-hours booking flow.'},
+    {icon:'⏱',t:'54% of booking requests happen after hours',d:'Marcus is squarely in this group — he submits at 9:30pm and expects a confirmation waiting for him in the morning.'}]},
+  {h:'Example Queries',ly:'queries',queries:['Does this dentist accept Delta Dental PPO?','Show me dentists near the Loop open on Thursdays','What\'s covered under a new patient visit if I have insurance?','Is there any cost for a cleaning if I\'m in-network?','Can I book a 12pm slot? I need to be back at work by 1:30']}
+ ],assumptions:[],sources:['Notion','Monday.com']},
+
+{id:'p3',title:'Priya Nair — The Anxious Avoider',type:'Persona',ct:'patient',v:'v1.1',date:'Mar 2026',
+ tagline:'A dentally anxious woman who has been putting off a visit for over two years. She\'s finally ready to book — but only if she can feel completely safe and unhurried before she ever walks through the door.',
+ stats:[{l:'Age',v:'28'},{l:'Location',v:'Toronto, ON 🇨🇦'},{l:'Role',v:'UX Designer, Agency'},{l:'Tech',v:'High'},{l:'Last Visit',v:'2+ years ago'},{l:'Insurance',v:'None (OOP)'}],
+ secs:[
+  {h:'Context & Background',ly:'rich',body:'Priya had a painful extraction experience as a teenager that left her with lasting dental anxiety. She knows her teeth need attention — she\'s been mentioning a dull ache to her roommate for months — but every time she thinks about booking, she finds a reason to postpone.\n\nShe doesn\'t have employer dental insurance and pays out of pocket. Cost matters, but it\'s secondary to trust. She needs to feel safe with a specific dentist before she agrees to sit in the chair. She is of South Indian heritage, culturally values warmth and personal connection in healthcare, and notices when a practice feels sterile or impersonal. No accessibility needs, though she processes decision-making slowly under stress.'},
+  {h:'Tool Stack',ly:'tools',tools:['Google Search','Reddit (r/askTO)','Instagram','iPhone / Chrome','Google Maps Photos','WhatsApp'],insight:'42% of patients cite "a high patient rating" as a top decision factor. For Priya, this isn\'t optional — it\'s the primary filter that determines if she even considers a practice.'},
+  {h:'Communication Style',ly:'commstyle',style:[{l:'Tone',v:'Warm, tentative'},{l:'Style',v:'Detailed, exploratory'},{l:'Language',v:'Conversational'},{l:'Channel pref.',v:'Chat > Email'}],desc:'Priya asks soft, open-ended questions. She prefers chat interfaces over forms because they feel less clinical. She\'ll share context about her anxiety unprompted and responds well to empathetic, unhurried replies. She is reassured by specificity — vague answers make her more anxious.'},
+  {h:'Goals & Motivations',ly:'goals2',goals:[{t:'Find a dentist explicitly gentle with anxious patients',d:'Ideally mentioned by name in reviews. A generic "gentle care" badge on a profile isn\'t enough — she needs to read it in a real patient\'s words.'},
+    {t:'Understand exactly what will happen during her appointment',d:'She needs a step-by-step preview of the visit before she arrives. Any surprise — even a minor one — can cause her to cancel.'},
+    {t:'Feel emotionally ready — a sense of control over the experience',d:'She doesn\'t just want a time slot. She wants to feel that she\'s chosen this dentist deliberately and knows what to expect.'},
+    {t:'Address a specific concern without being judged',d:'She has a dull ache she\'s been ignoring. She needs reassurance that the practice won\'t lecture her for the 2-year gap.'}],
+   why:'She discovered Opencare through a Reddit thread recommending it for finding dentists with strong reviews. The gift card offer was appealing, but what kept her was being able to read detailed patient reviews before contacting anyone.'},
+  {h:'Frustrations & Pain Points',ly:'pains2',pains:[{icon:'😟',t:'58% of dental patients report anxiety — Priya is in the "moderately nervous" segment',d:'She has let it stop her for 2+ years. The platform needs to acknowledge this reality, not treat her like a routine patient.'},
+    {icon:'📸',t:'Can\'t gauge bedside manner from a directory listing',d:'She needs photos, video, and personal reviews. A listing with a headshot and a phone number tells her nothing about what it will feel like to sit in that chair.'},
+    {icon:'🤷',t:'Post-booking silence from the practice amplifies her anxiety',d:'If she doesn\'t hear back quickly, she assumes the worst and starts looking for a reason to cancel. Silence = abandonment risk.'},
+    {icon:'📋',t:'Lost in the patient app after submitting her NPR',d:'After submitting, she had no idea what happened next or how to check her status. Validated by Opencare\'s usability test, Feb 2026.'},
+    {icon:'💬',t:'Fear of being judged for neglecting her teeth',d:'She needs explicit reassurance — in the app copy, in the intake form, in the confirmation email — that the practice won\'t make her feel guilty.'}]},
+  {h:'Example Queries',ly:'queries',queries:['Do you have dentists who are known for being gentle with anxious patients?','What actually happens during a first visit? Like step by step?','I submitted my request but haven\'t heard back — is that normal?','I haven\'t been to the dentist in 2 years, will they be judgmental about that?','Can I message the dentist before my appointment to ask them some questions?']}
+ ],assumptions:[],sources:['Notion','Monday.com']},
+
+{id:'p4',title:'Tomás Rivera — The Reactive Booker',type:'Persona',ct:'patient',v:'v1.0',date:'Mar 2026',
+ tagline:'A busy father dealing with a worsening toothache who needs a dentist today — not next week. He\'ll book the first available appointment that looks credible, and he\'ll do it from his phone at 10pm.',
+ stats:[{l:'Age',v:'41'},{l:'Location',v:'Houston, TX 🇺🇸'},{l:'Role',v:'Warehouse Supervisor'},{l:'Tech',v:'Medium'},{l:'Last Visit',v:'3+ years ago'},{l:'Insurance',v:'None (uninsured)'}],
+ secs:[
+  {h:'Context & Background',ly:'rich',body:'Tomás is a working-class father of two who hasn\'t prioritised dental care in years — not because he doesn\'t value it, but because the combination of a demanding schedule, no dental insurance, and cost uncertainty has kept him away. He is not avoiding the dentist out of fear; he simply never had a compelling enough reason to act until now.\n\nHe\'s been managing a dull toothache on and off for weeks with ibuprofen. This week it got significantly worse. Pain has become the trigger — he needs to act today, not plan for it. He is bilingual (English, Spanish) and feels more comfortable with informal, plain-English communication. He has no accessibility needs but operates under significant time pressure.'},
+  {h:'Tool Stack',ly:'tools',tools:['Google Search','Google Maps','Android / Chrome','Facebook','SMS / Phone calls'],insight:'60% of Opencare patients want to be seen ASAP. 19% of matches explicitly indicate an urgent issue. 54% of booking requests happen after business hours — Tomás is archetypal of all three.'},
+  {h:'Communication Style',ly:'commstyle',style:[{l:'Tone',v:'Direct, terse'},{l:'Style',v:'Short, urgent'},{l:'Language',v:'Plain English'},{l:'Channel pref.',v:'SMS > Phone'}],desc:'Tomás writes the way he texts — short and to the point. He won\'t read paragraphs of instructions. He responds best to clear action prompts and dislikes being asked to fill in lengthy forms when he\'s in pain. If a process feels slow, he abandons it and calls a different office.'},
+  {h:'Goals & Motivations',ly:'goals2',goals:[{t:'Get an appointment as soon as possible',d:'Ideally same-day or next morning. The pain is stopping him from sleeping and concentrating at work — this is urgent.'},
+    {t:'Find a dentist close to him',d:'He can\'t lose more than 30–40 minutes commuting on a workday. Proximity is the second filter after availability.'},
+    {t:'Get a rough sense of cost upfront',d:'Not an itemised quote — just enough to know he won\'t get blindsided. Cost uncertainty is a real hesitation even when he\'s in pain.'},
+    {t:'Get the problem fixed, not just triaged',d:'He wants a dentist who will actually treat him during the visit, not just do an exam and refer him somewhere else.'}],
+   why:'He found Opencare via a Google search for "emergency dentist near me open tonight." The ability to book immediately online — without calling during business hours — is the platform\'s core value proposition for him.'},
+  {h:'Frustrations & Pain Points',ly:'pains2',pains:[{icon:'🕐',t:'Availability is invisible on most dental sites',d:'He can\'t tell if a dentist can actually see him today until he calls — and calling during a work shift isn\'t always possible. He needs "available today" to be a filter, not a phone conversation.'},
+    {icon:'💬',t:'Platform communicates with him the same as regular patients',d:'Product data confirms there\'s no dedicated triage or urgency signalling in the current flow. Tomás needs emergency-specific communication, not a routine booking experience.'},
+    {icon:'💸',t:'No dental insurance means cost uncertainty is a real anxiety',d:'Not knowing if a visit will cost $90 or $900 causes real hesitation even when he\'s in acute pain. A rough estimate before booking would remove this blocker.'},
+    {icon:'📋',t:'Long funnels with too many questions feel like barriers',d:'The emergency funnel experiment identified triage question drop-off as a specific problem. Every extra step between Tomás and a confirmed booking is a bounce risk.'},
+    {icon:'📍',t:'Practices that can\'t see emergency patients appearing in results',d:'If he clicks through to a practice and discovers they don\'t do same-day emergency appointments, he\'s gone. He won\'t try a second result on Opencare — he\'ll go back to Google.'}]},
+  {h:'Example Queries',ly:'queries',queries:['Emergency dentist near me open tonight','Can I get seen today? I have a bad toothache','How much does it cost without insurance?','Is there a dentist within 5 miles open on Saturday?','My tooth has been hurting for 3 days and it\'s getting worse']}
+ ],assumptions:[],sources:['Notion','Monday.com']},
+
+{id:'p5',title:'Dr. Sarah Okafor — Growth-Focused Dentist',type:'Persona',ct:'practice',v:'v1.1',date:'Mar 2026',
+ tagline:'A driven dentist who wants to grow her patient base without growing her admin overhead. She\'s tech-comfortable, data-curious, and wants Opencare to prove its value in concrete numbers.',
+ stats:[{l:'Age',v:'39'},{l:'Location',v:'Vancouver, BC 🇨🇦'},{l:'Specialty',v:'General Dentistry'},{l:'Size',v:'4 chairs'},{l:'Tech',v:'High'},{l:'Staff',v:'2 hygienists + receptionist'}],
+ secs:[
+  {h:'Context & Background',ly:'rich',body:'Dr. Okafor opened her own practice four years ago after working as an associate at a group practice. She has a strong loyal patient base but knows she has unused chair capacity. A new DSO opened nearby six months ago and has been aggressively advertising — she feels the competitive pressure.\n\nShe\'s comfortable with technology and uses a modern practice management system. She checks her Opencare dashboard weekly, but delegates day-to-day app management to her receptionist. She\'s willing to invest time in the platform if the ROI is clear — and she tracks it carefully.'},
+  {h:'Tool Stack',ly:'tools',tools:['Opencare Practice App','Dental practice management software','Google Business Profile','Instagram (practice account)','Email','Slack (team comms)'],insight:'Practices that actively manage their Opencare profile — updating availability weekly and responding to reviews within 48h — generate 2.3× more bookings than passive profiles. Dr. Okafor does both.'},
+  {h:'Communication Style',ly:'commstyle',style:[{l:'Tone',v:'Professional & data-driven'},{l:'Style',v:'Concise, evidence-based'},{l:'Language',v:'Business + clinical mix'},{l:'Channel pref.',v:'Email > In-app'}],desc:'Dr. Okafor wants numbers, not narratives. She responds well to dashboards, benchmarks, and comparisons. She\'ll read a short, data-supported message carefully; she\'ll ignore a long one with no clear point.'},
+  {h:'Goals & Motivations',ly:'goals2',goals:[{t:'Grow new patient volume by 20% this year',d:'She has the chair capacity and the team. She needs a reliable, low-effort channel to fill it — not another marketing task on her plate.'},
+    {t:'Reduce her 18% no-show rate',d:'Every no-show is direct revenue loss. She wants automated reminders that work, not manual follow-up calls from her receptionist.'},
+    {t:'Build a strong online reputation to compete with the nearby DSO',d:'The DSO is outspending her on ads. She can\'t match their budget — but she can out-rate them on reviews. Opencare is part of that strategy.'},
+    {t:'Get a clear ROI picture from Opencare vs. other channels',d:'She tracks her CAC manually in a spreadsheet. She wants Opencare to give her this number natively so she can justify the commission to herself every month.'}],
+   why:'Opencare gives her a qualified patient acquisition channel that runs without her direct involvement. The commission model means she only pays when it works — which fits her risk tolerance.'},
+  {h:'Frustrations & Pain Points',ly:'pains2',pains:[{icon:'📊',t:'No unified view of bookings from all sources',d:'She gets bookings from Opencare, her website, phone, and walk-ins — and has no single dashboard that shows her total chair utilisation. She cobbles it together in a spreadsheet.'},
+    {icon:'🤝',t:'Opencare patients sometimes have different expectations',d:'New patients from Opencare occasionally arrive expecting a different experience than her long-term patients. She wishes she could send a practice intro and expectations brief before the first visit.'},
+    {icon:'💰',t:'Commission feels high when she compares it to her other CAC channels',d:'She knows Opencare works — but without a clean CAC comparison, she can\'t prove it to herself definitively. The number feels high when she\'s guessing.'},
+    {icon:'🚨',t:'Support response from Opencare is too slow for urgent issues',d:'When a double-booking or dispute comes up, she needs a resolution within the hour — not a ticket that gets answered the next business day.'}]},
+  {h:'Example Queries',ly:'queries',queries:['How many new patients did Opencare bring me last month?','What\'s my average response time vs. other practices in Vancouver?','How do I improve my profile ranking in search results?','Can I see which patients came from Opencare vs. my website?','How do I set up automatic reminders for appointments booked through Opencare?']}
+ ],assumptions:['Commission concerns inferred from CRM feedback patterns'],sources:['Monday.com','Notion']},
+
+{id:'p6',title:'Dr. James Patel — The Reluctant Adopter',type:'Persona',ct:'practice',v:'v1.0',date:'Mar 2026',
+ tagline:'A solo practitioner who runs a tight, trust-based practice and views new platforms with healthy scepticism. He\'ll adopt Opencare — but only if it doesn\'t disrupt what\'s already working.',
+ stats:[{l:'Age',v:'54'},{l:'Location',v:'Boston, MA 🇺🇸'},{l:'Specialty',v:'Dentistry'},{l:'Size',v:'2 chairs'},{l:'Tech',v:'Low'},{l:'Staff',v:'Receptionist only'}],
+ secs:[
+  {h:'Context & Background',ly:'rich',body:'Dr. Patel has run his practice for 22 years. His patient base is largely referral-driven — families who\'ve been coming to him for decades. He\'s not looking to grow aggressively; he\'s looking to maintain what he has while reducing the admin burden on himself and his one receptionist.\n\nHe\'s used the same practice management software for 12 years and has no interest in changing it unless absolutely necessary. He agreed to try Opencare after a colleague recommended it, but remains unconvinced. He\'s cautious about platforms that require him to hand over scheduling control or patient data.'},
+  {h:'Tool Stack',ly:'tools',tools:['Legacy practice management software','Phone / landline','Email (desktop)','Paper appointment book (backup)','Word of mouth'],insight:'Practices with low tech adoption complete onboarding at a 34% lower rate than the platform average. Dr. Patel\'s segment is the highest-risk for churn within the first 60 days if onboarding isn\'t actively supported.'},
+  {h:'Communication Style',ly:'commstyle',style:[{l:'Tone',v:'Formal, measured'},{l:'Style',v:'Thorough, cautious'},{l:'Language',v:'Plain English'},{l:'Channel pref.',v:'Phone > Email'}],desc:'Dr. Patel reads every word of any document before signing. He asks detailed questions before taking any action. He responds poorly to "move fast and figure it out" onboarding. He needs to feel that he fully understands something before he\'s comfortable with it.'},
+  {h:'Goals & Motivations',ly:'goals2',goals:[{t:'Maintain his current patient base without disruption',d:'He\'s not trying to double his volume. He wants Opencare to bring in a small, steady stream of new patients without changing how his practice operates.'},
+    {t:'Reduce time his receptionist spends on phone bookings',d:'She currently handles all scheduling by phone. If Opencare can reduce that workload without creating new complexity, it\'s worth trying.'},
+    {t:'Keep full control over his schedule with no surprises',d:'He will not accept a platform that allows patients to book outside his explicitly defined hours or creates double-bookings he has to manually resolve.'},
+    {t:'Understand exactly what he\'s paying before committing',d:'He read the commission terms three times before signing up. He still isn\'t sure he fully understands how the per-booking fee is calculated.'}],
+   why:'His colleague\'s referral was the only reason he tried it. He stays because the admin burden hasn\'t increased — but he would churn immediately if it did.'},
+  {h:'Frustrations & Pain Points',ly:'pains2',pains:[{icon:'🏗',t:'Platform feels designed for larger, tech-forward practices',d:'Every feature and email assumes he has a dedicated marketing person and checks an app dashboard daily. He doesn\'t. He wants a product that works quietly in the background.'},
+    {icon:'📚',t:'Onboarding assumed tech familiarity he doesn\'t have',d:'The setup guide referenced features he\'d never heard of and assumed he\'d already connected a calendar integration. His receptionist had to call support three times.'},
+    {icon:'💰',t:'Commission structure was unclear until after his first booking',d:'He understood the commission model differently than how it was charged. This eroded trust immediately and he almost churned in the first week.'},
+    {icon:'🤝',t:'Doesn\'t trust that Opencare patients will become long-term patients',d:'He\'s invested in multi-decade patient relationships. He worries that platform-acquired patients are transactional and won\'t become the loyal, referral-generating patients his practice is built on.'}]},
+  {h:'Example Queries',ly:'queries',queries:['How do I make sure patients can only book during the hours I set?','What exactly does the commission cover — is it per booking or per visit?','Can my receptionist manage everything without me having to log in?','How do I cancel a booking if the patient isn\'t a good fit for my practice?','What happens if a patient books and then doesn\'t show up — do I still pay commission?']}
+ ],assumptions:['Onboarding friction inferred from support ticket analysis'],sources:['Monday.com','Notion']},
+
+// ── USER JOURNEYS
+{id:'j1',title:'Marcus Reed — Insurance Maximizer Journey',type:'User Journey',ct:'patient',v:'v1.0',date:'Mar 2026',
+ pIcon:'🧑‍💼',pName:'Marcus Reed, 38 — Chicago, IL 🇺🇸',pSub:'Persona · Insurance Maximizer',
+ pQ:'"I have $1,500 in Delta Dental PPO benefits. I need an in-network dentist near my office, strong reviews, available at lunch. I won\'t book until all three boxes are ticked."',
+ pTags:['Delta Dental PPO','High tech savvy','Mobile-first','Last visit: 14 months ago','Q4 urgency'],
+ emo:[{l:'Neutral',s:'Conscience'},{l:'Hopeful',s:'Assessment'},{l:'Focused',s:'Consideration'},{l:'Anxious',s:'Engage'},{l:'Satisfied',s:'Retention'}],
+ stages:[
+  {label:'Conscience',sub:'Trigger & Awareness',scenario:'Q4 arrives. Marcus realises his $1,500 Delta Dental PPO benefit resets in January. He opens Google on his iPhone and searches "dentist near the Loop that takes Delta Dental PPO." He\'s been burned by outdated listings before and is braced for friction.',touchpoints:['🔔 Insurance renewal email','📅 Calendar (year-end)','💬 Colleague conversation'],actions:['Checks insurance card and annual benefit balance','Decides to act before benefit resets (Q4 urgency)','Opens Safari, searches "dentist near Loop that accepts Delta Dental PPO"'],emo:{e:'😐',l:'Neutral → Motivated',d:'"I\'ve been putting this off, but I\'m going to lose money if I don\'t act." Financially driven urgency, no anxiety about the visit itself.'},pains:['No clear trigger within Opencare — re-acquisition relies on external memory or year-end urgency','Competitor directories have outdated in-network listings that erode trust before Opencare is considered'],opps:[{tag:'high',t:'Email Marcus in October: "Your benefits reset in January — book now." Personalised benefit-expiry reminder drives re-entry into the funnel.'},{tag:'high',t:'Surface a verified "in-network confirmed" badge on the Welcome Step — reduce the primary trust barrier before the results page.'}]},
+  {label:'Assessment',sub:'Research & Filtering',scenario:'He lands on Opencare. The insurance filter is his first move. He selects "Delta Dental PPO" and compares 2–3 in-network practices by rating and distance, reading 5–10 reviews per dentist before shortlisting.',touchpoints:['🔍 Google Search','🔵 Delta Dental Portal','⭐ Yelp / Zocdoc','🟢 Opencare Welcome Step'],actions:['Searches "dentists near Loop that accept Delta Dental PPO"','Scans insurer portal — finds listing inaccurate or outdated','Clicks on Opencare from Google results','Selects "Delta Dental PPO" in insurance step of funnel'],emo:{e:'😤',l:'Frustrated → Cautious',d:'"I\'ve been burned by out-of-date insurance info before. I\'m not booking anywhere until I\'m 100% sure they\'re in-network."'},pains:['Inaccurate in-network listings on insurance portals erode trust pre-Opencare','Confusing jargon: "participating provider" vs "in-network" creates uncertainty'],opps:[{tag:'high',t:'Replace "accepts insurance" with a dynamically verified "In-network: Delta Dental PPO ✓" badge. Marcus\'s #1 trust signal.'},{tag:'quick',t:'Show result count updating in real time as filters are applied — immediate feedback that the filter is working.'}]},
+  {label:'Consideration',sub:'Evaluation & Compare',scenario:'Marcus opens 2–3 dentist profiles. He reads reviews, checks credentials, verifies insurance, and looks for Thursday lunchtime availability. He may leave the app to Google the clinic name before committing.',touchpoints:['📋 Results Page — filter by insurance','⭐ Dentist profile + reviews','🗺 Distance / map view'],actions:['Applies insurance filter on Results Page','Filters by distance — nearest to office','Opens 2–3 profiles, reads reviews carefully','Checks availability for Thursday lunchtimes','Verifies "in-network" badge on profile page'],emo:{e:'🔍',l:'Analytical → Focused',d:'"OK, this looks promising. Let me verify the insurance, check the reviews, confirm the location." Task-oriented, comparing methodically.'},pains:['Results page doesn\'t clearly distinguish PPO vs HMO coverage','No upfront cost estimate for a standard cleaning at the selected practice'],opps:[{tag:'high',t:'Add "Est. out-of-pocket cost: $0 for cleaning with Delta Dental PPO" on each results card. Address the #1 concern before Marcus has to ask.'},{tag:'quick',t:'Show insurance compatibility directly on the results card — don\'t make Marcus click into the profile to verify.'}]},
+  {label:'Engage',sub:'Book & Visit',scenario:'Marcus submits a new patient request (NPR) at 9:30pm from his phone. He expects a quick response. He goes to his lunchtime appointment and the experience matches expectations.',touchpoints:['📝 New Patient Request form','📱 Patient App (NPR status)','📧 Practice confirmation email','🦷 In-office visit'],actions:['Submits NPR at ~9:30pm via mobile','Checks patient app for confirmation status next morning','Practice calls to confirm','Attends lunchtime appointment','Pays $0 for cleaning (in-network)'],emo:{e:'⏳',l:'Impatient → Relieved',d:'"I submitted at night — when will they confirm?" Dip in confidence during the wait. Strong relief when confirmation arrives promptly.'},pains:['54% of booking requests happen after hours — friction if confirmation is slow','Post-NPR silence: patient app shows "pending" with no ETA','Practice confirmation call may not come until next business morning'],opps:[{tag:'quick',t:'Show real-time NPR status with estimated response window in the patient app.'},{tag:'high',t:'After-hours alert to practices: "Request received — confirm by 8am to secure this booking."'}]},
+  {label:'Retention',sub:'Post-visit & Loyalty',scenario:'Appointment done. Marcus gets a receipt. He expects a 6-month follow-up reminder and ideally a one-click rebooking. He may refer a colleague if the app makes it effortless.',touchpoints:['📧 Post-visit summary email','📱 Patient App','⭐ Review request','🔔 6-month reminder'],actions:['Receives appointment summary and receipt','Views schedule in app','Leaves review if prompted and experience was good','Considers rebooking 6-month follow-up'],emo:{e:'✅',l:'Satisfied → Loyal',d:'"Good dentist, zero surprise billing, experience matched the reviews." If the app sends a timely 6-month reminder, Marcus will rebook without any external trigger.'},pains:['No proactive 6-month rebooking nudge — Marcus will wait for an external reminder','Review request is buried or generic — low conversion rate'],opps:[{tag:'high',t:'One-tap 6-month rebooking from the post-visit confirmation screen. Marcus wants to set it and forget it.'},{tag:'quick',t:'Name-specific review prompt 24h after visit: "How was Dr. [Name]?" — 3× higher response rates.'}]}
+ ],
+ dOps:[{i:'💸',s:'Stage 01+05',t:'Benefit Expiry Re-engagement',b:'Trigger a personalised email to Marcus-type users in October showing remaining benefit and time left to use it. Creates urgency without relying on chance.',tag:'Q4 conversion driver'},{i:'🔒',s:'Stage 02+03',t:'Verified In-Network Badge',b:'Dynamically verified "In-network: Delta Dental PPO ✓" badge that eliminates Marcus\'s biggest drop-off reason.',tag:'Reduces pre-booking abandonment'},{i:'🧾',s:'Stage 03',t:'Upfront Cost Estimate on Cards',b:'Show "Est. cost for cleaning: $0 with your plan" on results cards. Removes the final objection before booking.',tag:'High conversion lift'},{i:'📲',s:'Stage 04',t:'Post-NPR Status Clarity',b:'After submitting an NPR outside business hours, show a clear timeline with expected response window.',tag:'Post-NPR anxiety reduction'},{i:'🔁',s:'Stage 05',t:'One-tap 6-Month Rebooking',b:'At the end of the appointment summary, offer "Rebook your 6-month clean". Converts satisfied patients into retained ones.',tag:'Retention flywheel'},{i:'⏰',s:'Stage 02',t:'After-Hours Smart Scheduling',b:'54% of requests come after hours. Pre-select preferred time window so practices can confirm without back-and-forth.',tag:'After-hours booking UX'}],
+ assumptions:[],sources:['Notion','Monday.com','Figma']},
+
+{id:'j2',title:'Priya Nair — Anxious Avoider Journey',type:'User Journey',ct:'patient',v:'v1.0',date:'Mar 2026',
+ pIcon:'👩‍💻',pName:'Priya Nair, 28 — Toronto, ON 🇨🇦',pSub:'Persona · Anxious Avoider',
+ pQ:'"I haven\'t been in 2 years. I know I need to go. But I need to feel completely safe with this dentist before I ever sit in that chair. I\'ll read every review. I need to know they\'re gentle."',
+ pTags:['No insurance (OOP)','High dental anxiety','Trust-driven','Last visit: 2+ years ago','Chat-preferred'],
+ emo:[{l:'Avoidant',s:'Conscience'},{l:'Apprehensive',s:'Assessment'},{l:'Cautious Hope',s:'Consideration'},{l:'Anxious',s:'Engage'},{l:'Empowered',s:'Retention'}],
+ stages:[
+  {label:'Conscience',sub:'Trigger & Awareness',scenario:'A persistent dull ache finally tips Priya into action. Fear has been the dominant force until now. She goes to Reddit (r/askTO) first — peer recommendations over ads. She finds Opencare mentioned in a thread and spends 30–45 minutes on Instagram and Google Maps before clicking through.',touchpoints:['🦷 Physical symptom (ache)','💬 Roommate conversation','🔴 Reddit r/askTO','💡 Opencare mention'],actions:['Physical symptom overrides avoidance','Asks roommate for peer validation','Goes to Reddit for recommendations (not ads)','Finds Opencare mentioned in r/askTO thread'],emo:{e:'😟',l:'Avoidant → Reluctant',d:'"I need to go but the thought of it makes me anxious. The ache is bad enough now that I can\'t ignore it." The trigger is physical discomfort, not rational planning.'},pains:['No proactive re-engagement — Priya needs to be physically symptomatic before she\'ll act','58% of patients report dental anxiety; Opencare has no presence targeting them in the awareness phase'],opps:[{tag:'strategic',t:'Launch "anxiety-friendly" content on Reddit and Instagram positioning Opencare as the answer at the top of the funnel.'},{tag:'high',t:'Create a dedicated awareness campaign for dental avoiders: "It\'s OK if you haven\'t been in a while."'}]},
+  {label:'Assessment',sub:'Research & Filtering',scenario:'She reads the Opencare funnel step "How do you feel about visiting?" and feels seen. She applies an anxiety-friendly filter and reads 15–20 reviews looking for mentions of specific dentists\' names and bedside manner.',touchpoints:['🔍 Google Search','📸 Instagram (practice photos)','🗺 Google Maps','🟢 Opencare Welcome Step'],actions:['Spends 45 min on Instagram and Google Maps viewing practice photos','Opens Opencare, enters address','Selects "I\'m a bit nervous" in the anxiety funnel step','Applies anxiety-friendly filter on results page'],emo:{e:'🔦',l:'Apprehensive → Searching',d:'"Maybe if I find the right dentist it won\'t be so bad." Cautious optimism. She\'s processing slowly under stress — vague info makes anxiety worse.'},pains:['Competitor directories show sterile, impersonal listings — no atmosphere preview','Opencare funnel doesn\'t explicitly signal "we understand anxiety" until mid-funnel'],opps:[{tag:'high',t:'Make "How do you feel about visiting?" the gateway to a dedicated anxiety-first track with adjusted copy, imagery, and filtering.'},{tag:'high',t:'Promote "anxiety-friendly dentist" as a primary badge on results cards — not buried in secondary filters.'}]},
+  {label:'Consideration',sub:'Trust-Building',scenario:'Priya reads 15–20 reviews looking for mentions of specific dentists\' names and bedside manner. She asks Opencare chat: "Do you have dentists known for being gentle?" She cross-references with Google reviews before deciding.',touchpoints:['📋 Results Page — anxiety filter','⭐ Review content (specific names)','📸 Office photos on profile','🤖 Opencare AI / chat support'],actions:['Reads 15–20 reviews — looks for dentist names mentioned specifically','Views all office photos in gallery','Asks Opencare chat: "Do you have dentists known for being gentle?"','Cross-references with Google reviews before deciding'],emo:{e:'🌱',l:'Guarded → Building Trust',d:'"This profile feels different. The reviews mention Dr. [Name] by name and say she\'s incredibly gentle. This could work." The pivotal moment — she\'s allowing herself to imagine a positive experience.'},pains:['Can\'t gauge bedside manner from profile alone','Fear of judgement for 2-year gap — needs explicit "judgement-free" messaging'],opps:[{tag:'high',t:'Introduce a verified "Anxiety-Friendly" badge for dentists with proven track records, based on review analysis.'},{tag:'quick',t:'Add a "judgement-free zone" note to profiles and booking confirmation copy.'}]},
+  {label:'Engage',sub:'Book & Prepare',scenario:'She submits the NPR and immediately feels the post-submission silence as threatening. She checks the patient app repeatedly. Any delay amplifies anxiety. Once confirmed and she\'s met the dentist, the experience is transformative.',touchpoints:['📝 NPR submission','📱 Patient App (status check)','📧 Practice confirmation','📋 Pre-visit info','🦷 In-office visit'],actions:['Submits NPR — immediately looks for confirmation','Checks patient app multiple times for status','Asks chat: "I submitted but haven\'t heard back — is that normal?"','Attends appointment — experiences gentle, unhurried care'],emo:{e:'😰',l:'Anxious → Transformed',d:'Post-NPR silence creates acute anxiety. Once confirmed, stress begins to reduce. Day of appointment: nerves high. During/after visit with a gentle dentist: transformative relief and pride.'},pains:['Post-NPR silence is the #1 drop-off risk for Priya — usability testing (Feb 2026) confirmed she felt "lost" in the app post-submission','No pre-visit "what to expect" content to reduce day-of anxiety'],opps:[{tag:'high',t:'Immediately after NPR: warm, specific message — "We know waiting can feel stressful. Here\'s exactly what happens next, step by step."'},{tag:'quick',t:'Auto-send a "What happens at your first visit?" guide in the app after NPR confirmation.'}]},
+  {label:'Retention',sub:'Recovery & Loyalty',scenario:'Post-appointment Priya is a different person — proud she went. If the experience was gentle as promised, she becomes a loyal evangelist and will refer others in her network.',touchpoints:['✅ Post-visit email','📱 Patient App','💬 WhatsApp (tells roommate)','⭐ Detailed review'],actions:['Tells roommate she went — emotional milestone','Leaves a detailed review praising dentist by name','Shares practice on WhatsApp with anxious friends','Books 6-month follow-up without hesitation'],emo:{e:'🌟',l:'Proud → Evangelistic',d:'"I actually did it. And it was fine." Priya\'s post-visit state is unique — she\'s not just satisfied, she\'s proud of herself. If the platform nurtures this, she becomes a powerful word-of-mouth source.'},pains:['Generic post-visit email doesn\'t acknowledge the emotional significance of her milestone','No prompt to refer anxious friends — her network is Opencare\'s most valuable audience'],opps:[{tag:'high',t:'Post-visit: "You did it 🎉 We know that wasn\'t easy." Acknowledge the milestone. Follow with a referral prompt for anxious patients.'},{tag:'strategic',t:'Build a word-of-mouth referral loop for the anxious avoider segment — Priya\'s network is full of people just like her.'}]}
+ ],
+ dOps:[{i:'🌿',s:'Stage 01',t:'Anxiety-Aware Awareness Content',b:'"It\'s OK if you haven\'t been in a while." Organic Reddit/social presence targeting people researching "how to find a dentist when you\'re scared."',tag:'Top-of-funnel for 58% of anxious patients'},{i:'🎭',s:'Stage 02–03',t:'Anxiety-First Funnel Track',b:'When user selects "I\'m nervous" in the funnel, branch them into an anxiety-first track: adjusted copy, "gentle dentist" as top filter, pre-populated anxiety-friendly practices.',tag:'Funnel personalisation'},{i:'🤝',s:'Stage 03',t:'Gentle Dentist Certification Badge',b:'Verified "Anxiety-Friendly" badge for dentists with proven track records in nervous patient care, based on review analysis.',tag:'Trust signal for anxious patients'},{i:'📬',s:'Stage 04',t:'Empathetic Post-NPR Communication',b:'Immediately after NPR submission: warm, specific message with a step-by-step first-visit walkthrough and direct message option to the practice.',tag:'Critical drop-off prevention'},{i:'🎉',s:'Stage 05',t:'Milestone-Aware Post-Visit Screen',b:'"You did it — and we know that wasn\'t easy for everyone." Acknowledges the emotional significance. Followed by a referral prompt.',tag:'Priya\'s network = anxious patients'},{i:'📖',s:'Stage 03–04',t:'Pre-Visit Preparation Content',b:'"What happens at your first visit?" guide — broken into clear, gentle steps. Shown automatically after NPR confirmation.',tag:'Day-of anxiety reduction'}],
+ assumptions:[],sources:['Notion','Monday.com','Figma']},
+
+{id:'j3',title:'Tomás Rivera — Reactive Booker Journey',type:'User Journey',ct:'patient',v:'v1.0',date:'Mar 2026',
+ pIcon:'👨‍🔧',pName:'Tomás Rivera, 41 — Houston, TX 🇺🇸',pSub:'Persona · Reactive Booker',
+ pQ:'"My tooth has been killing me since yesterday. I need someone today or tomorrow — I don\'t care about picking the perfect dentist. I just need someone credible and available now."',
+ pTags:['Emergency booking','Speed-driven','Late-night mobile','Moderate tech savvy','Parent / busy schedule'],
+ emo:[{l:'In Pain',s:'Conscience'},{l:'Urgent',s:'Assessment'},{l:'Focused',s:'Consideration'},{l:'Waiting',s:'Engage'},{l:'Grateful',s:'Retention'}],
+ stages:[
+  {label:'Conscience',sub:'Trigger (Acute)',scenario:'Tomás wakes up with a worsening toothache. He doesn\'t have a regular dentist. He\'s tried calling practices before and been put on hold or told the next available is in 3 weeks. At 10pm from his phone, he Googles "emergency dentist near me Houston open tomorrow."',touchpoints:['🦷 Acute toothache','📱 Google Search (mobile)','🟢 Opencare — Dental Emergency path'],actions:['Toothache worsens to point of forcing action','Googles "emergency dentist near me" on mobile at ~10pm','Clicks Opencare — selects "Yes" to dental emergency question'],emo:{e:'😣',l:'Pain → Desperation',d:'"This hurts and I need to fix it now." Zero consideration phase — Tomás is not researching, he\'s triaging. Acute discomfort drives impulse action.'},pains:['No Opencare presence until Tomás is in acute pain — no preventative re-engagement channel exists','Emergency funnel must be instant — any friction causes immediate bounce'],opps:[{tag:'high',t:'Surface Opencare in "emergency dentist near me" paid and organic results. The entry point for Tomás is a crisis — Opencare must be visible exactly at that moment.'},{tag:'high',t:'Streamline emergency funnel to 3 steps max: location → emergency type → results. Every extra question is a drop-off.'}]},
+  {label:'Assessment',sub:'Speed-First Search',scenario:'He finds Opencare. The "Dental Emergency" funnel path immediately addresses his situation and raises his confidence. He moves through the emergency funnel rapidly, looking only for availability.',touchpoints:['🚨 Emergency funnel step','📋 Results Page','⏰ Availability filter'],actions:['Moves through emergency funnel — fast-taps options','Enters location, selects "As soon as possible"','Scans results for availability badges'],emo:{e:'⚡',l:'Urgent → Scanning',d:'"Please just show me someone available soon." Impatient with any friction. If the emergency path is clear and fast, his confidence rises quickly.'},pains:['Availability is invisible until NPR is submitted — can\'t see open slots without contacting the practice','No live availability calendar — "Available this week" is a badge, not a confirmed slot'],opps:[{tag:'high',t:'Show real-time availability on results cards: "Next available: Tomorrow 9am." This is Tomás\'s single decision trigger.'},{tag:'quick',t:'"Available today" and "Available tomorrow" as primary result card signals for emergency seekers.'}]},
+  {label:'Consideration',sub:'Fast Evaluation',scenario:'Tomás has zero tolerance for multi-step filtering. The first credible result with visible availability wins his booking — he\'s not comparing multiple options. He glances at rating and distance only.',touchpoints:['📋 Dentist profile (quick scan)','⭐ Star rating (glance-level)','✅ "Available this week" badge'],actions:['Skips detailed reviews — just needs a credible option available this week','Selects first result with high rating + availability','Glances at reviews (2–3 max)','Checks distance — within 20 min is acceptable'],emo:{e:'🎯',l:'Task-Focused',d:'"OK — this one has 4.8 stars, available tomorrow, 15 min away. Done." Tomás is satisficing, not optimising. First credible option that meets his threshold wins.'},pains:['Profile pages designed for considered evaluation — wrong information hierarchy for Tomás','If the first result looks off, he exits to Google rather than scrolling'],opps:[{tag:'high',t:'Condensed "emergency view" of profile: distance, today\'s availability, rating only. Not the full profile — Tomás doesn\'t need it.'},{tag:'quick',t:'Put availability as the #1 data point on emergency results cards, above the dentist\'s name.'}]},
+  {label:'Engage',sub:'Emergency Booking',scenario:'He submits an NPR at 10pm. He falls asleep. His biggest risk: if confirmation doesn\'t come by 8am, he calls a different practice. Speed of response is the critical variable.',touchpoints:['📝 NPR (late night mobile)','📱 Patient App','📞 Practice call (morning)','🦷 Emergency appointment'],actions:['Submits NPR at ~10pm from phone, falls asleep','Checks phone first thing in the morning for confirmation','If no reply by 8am, starts calling other practices','Attends appointment — pain resolved'],emo:{e:'😴',l:'Waiting → Anxious',d:'He goes to bed. The window before 8am is everything. A fast confirmation email/SMS is the highest-leverage action Opencare can take here.'},pains:['54% of requests come after hours — if the practice doesn\'t respond by 8am, Tomás is already calling elsewhere','Patient app post-NPR state gives no urgency signal to the practice'],opps:[{tag:'high',t:'Auto-send urgent alert to practices when emergency NPR arrives after hours: "Emergency booking — patient will contact other practices if not confirmed by 8am."'},{tag:'high',t:'SMS confirmation (not just email) for emergency patients — Tomás will check his texts before the app in the morning.'}]},
+  {label:'Retention',sub:'Convert to Regular',scenario:'Pain resolved. Tomás is grateful. But he will forget Opencare exists unless he\'s given a strong reason to return — specifically, a path to becoming a regular patient at this dentist.',touchpoints:['📧 Post-visit email','📱 Patient App','🔔 "Become a regular" prompt','📅 Follow-up booking'],actions:['Feels intense gratitude immediately post-treatment','Reads post-visit email quickly','Books a follow-up cleaning if prompted with one-tap flow','Otherwise, forgets about dental care until next incident'],emo:{e:'😌',l:'Relief → Gratitude',d:'"Thank god that\'s over." High emotional gratitude that fades fast. Any retention action must happen within 24–48 hours of treatment.'},pains:['Retention gap — gratitude is high but fades fast; no proactive path from emergency visit to regular patient','Generic post-visit email doesn\'t capitalise on Tomás\'s peak gratitude moment'],opps:[{tag:'high',t:'Within 24–48h post-visit: "Your emergency is handled. Make [Practice] your regular dentist?" with one-tap booking for a routine clean in 3–6 months.'},{tag:'strategic',t:'Build an emergency-to-regular patient conversion loop — emergency entry points are the highest-urgency acquisition moments Opencare has.'}]}
+ ],
+ dOps:[{i:'⚡',s:'Stage 02',t:'Ultra-Fast Emergency Funnel',b:'Compress the emergency path to 3 maximum steps. Location → Nature of emergency → Results. Pre-fill available slots on results cards.',tag:'Emergency UX is a competitive moat'},{i:'📅',s:'Stage 03',t:'Real-Time Availability on Cards',b:'"Next available: Tomorrow 9am — book now." This single data point is Tomás\'s decision trigger. It should be the first thing visible, above the dentist\'s name.',tag:'#1 filter for reactive bookers'},{i:'🚨',s:'Stage 04',t:'After-Hours Emergency Practice Alert',b:'Auto-send an urgent notification to the practice when an emergency NPR arrives after hours. Shifts urgency to the supply side before morning.',tag:'Critical retention before morning'},{i:'🔄',s:'Stage 05',t:'Emergency-to-Regular Conversion',b:'Within 24–48h post-visit: "Your emergency is handled. Make [Practice Name] your regular dentist?" with one-tap booking for a routine clean.',tag:'Emergency → retained patient flywheel'},{i:'📊',s:'Stage 04',t:'NPR Response SLA Tracking',b:'Surface practice response times to patients: "This practice typically responds within 1 hour." Builds confidence during the overnight wait.',tag:'Trust signal during highest-risk window'},{i:'💬',s:'All stages',t:'Mobile-First Emergency Experience',b:'100% of Tomás\'s journey happens on mobile at 10pm. Large tap targets, minimal form fields, SMS confirmation, clear status in one glance.',tag:'Mobile UX parity for after-hours'}],
+ assumptions:[],sources:['Notion','Monday.com','Figma']},
+
+{id:'j4',title:'Funnel Quiz — Patient User Journey',type:'User Journey',ct:'patient',v:'v1.0',date:'Mar 2026',
+ pIcon:'🧭',pName:'All Patient Segments — US & Canada',pSub:'Funnel Master · Branching Quiz Flow',
+ pQ:'"Just answer a few quick questions and we\'ll match you with the right dentist in under 30 seconds."',
+ pTags:['Emergency & non-emergency paths','Desktop & mobile','First-time users','Insurance & uninsured','All patient types'],
+ emo:[{l:'Curious',s:'Welcome'},{l:'Deciding',s:'Emergency?'},{l:'Specifying',s:'Details'},{l:'Hopeful',s:'Preferences'},{l:'Anticipating',s:'Insurance'},{l:'Relieved',s:'Loading'},{l:'Committed',s:'Results'}],
+ stages:[
+  {label:'Welcome',sub:'Entry Point',
+   scenario:'Patient lands on the funnel entry page. The headline reads "Let\'s find you the perfect dentist." They see a location input field, a "Use my current location" button, and a progress bar starting at 0%. The UI is clean and minimal — the only decision is entering their location and hitting Continue.',
+   touchpoints:['🌐 Google Search / Direct URL','📱 Opencare App','🏠 Homepage CTA'],
+   actions:['Lands on funnel welcome screen','Reads headline: "Let\'s find you the perfect dentist"','Enters home or work address in location field','OR taps "Use my current location"','Taps Continue'],
+   emo:{e:'😐',l:'Neutral → Curious',d:'"Answer a few quick questions and we\'ll match you with the right dentist in under 30 seconds." Low commitment ask. The promise of speed and a match (not a list) sets the right expectation.'},
+   pains:['Users who don\'t want to share location may hesitate — no fallback option explained','Progress bar shows 0% which can feel like a long journey ahead rather than a quick quiz'],
+   opps:[{tag:'high',t:'"Under 30 seconds" promise must be kept — if the quiz feels longer, trust in the headline erodes and drop-off spikes.'},{tag:'quick',t:'Add a "Search instead" escape hatch for returning users who want to go direct to results without re-answering the quiz.'}]},
+  {label:'Emergency?',sub:'Branch Decision',
+   scenario:'The first question is the critical branch: "Do you have a dental emergency?" Two answer tiles appear — Yes (I have an urgent issue) and No (I just need a new dentist). This single answer routes the patient into one of two completely different funnel paths.',
+   touchpoints:['🦷 Dental Emergency Question screen','📊 Progress bar — still at 0%'],
+   actions:['Reads question: "Do you have a dental emergency?"','Sees two answer tiles: Yes / I have an urgent issue · No / I just need a new dentist','Selects one to advance'],
+   emo:{e:'🤔',l:'Deciding',d:'The binary choice is intentionally simple. For emergency patients, "Yes" is an obvious, urgent tap. For routine patients, "No" is equally clear. The question effectively segments intent without friction.'},
+   pains:['No third option for patients who aren\'t sure (e.g., pain that\'s been building but not yet acute)','Patients with ongoing issues may misclassify themselves, leading to a mismatched funnel experience'],
+   opps:[{tag:'high',t:'Consider a third tile: "I\'m not sure / I have some pain" that routes to a triage sub-step rather than forcing a binary that may not fit.'},{tag:'quick',t:'Add a small helper text: "Not sure? Learn what counts as a dental emergency →" to reduce hesitation.'}]},
+  {label:'Details',sub:'Emergency Type or Mouth Wellness',
+   scenario:'EMERGENCY PATH: Patient is asked "What is the nature of your dental emergency?" Five answer tiles appear: Pain/Toothache, Broken/Chipped Tooth, Lost Tooth, Lost Filling, Other. Selecting "Other" reveals a free-text area: "Please describe the pain you\'re experiencing." NON-EMERGENCY PATH: Patient is asked about Mouth Wellness (their current oral health context) and then Concerns & Treatments they want to address.',
+   touchpoints:['🚨 Nature of Dental Emergency screen (emergency path)','🦷 Mouth Wellness screen (non-emergency path)','📝 Free-text area for "Other"'],
+   actions:['[Emergency] Selects emergency type from 5 tiles','[Emergency — Other] Types free-text description of symptoms','[Non-emergency] Selects mouth wellness status','[Non-emergency] Selects concerns and treatments'],
+   emo:{e:'🎯',l:'Specifying — focused',d:'Patients are in task mode. The tile-based UI removes cognitive load — they just need to tap the option that matches their situation. Free-text for "Other" gives a safety valve without bloating the default flow.'},
+   pains:['Emergency tile options don\'t cover all scenarios (e.g., swelling, abscess, broken crown) — "Other" is doing a lot of work','Non-emergency concerns & treatments step may feel overly clinical for first-time users who just want a checkup'],
+   opps:[{tag:'high',t:'Consider expanding the emergency type tiles to 6–7 options to reduce "Other" usage — each "Other" response is a signal of missing taxonomy.'},{tag:'quick',t:'Add a "Just a routine checkup" fast-track option in the non-emergency path for users who don\'t want to specify concerns.'}]},
+  {label:'Preferences',sub:'Important Factors + Timing',
+   scenario:'Both paths converge on preference questions. "The most important factors in choosing a dentist are…" — a multi-select tile grid with options patients can combine. Then: "When is the best time of day for your visit?" with 6 time slots to choose from (multi-select). "How soon would you like to visit the dentist?" with 4 urgency options.',
+   touchpoints:['✅ Important Factors screen','⏰ Best Time of Day screen','📅 How Soon screen'],
+   actions:['Selects 1+ factors that matter to them (multi-select)','Selects preferred times of day (multi-select, 6 options)','Selects how soon they want to be seen (4 options)'],
+   emo:{e:'💭',l:'Hopeful — personalising',d:'"This quiz is actually thinking about what I want." The multi-select preference questions make patients feel the match will be tailored to them, not just filtered by location. This is the highest-value emotional moment in the funnel.'},
+   pains:['If no preference is strongly held, patients may feel forced to select something just to advance — the quiz doesn\'t clearly allow skipping some steps','Time-of-day tiles use generic labels — patients with irregular schedules (like Tomás) may not see an option that fits'],
+   opps:[{tag:'high',t:'"Skip this step" affordance on preference questions where the answer genuinely doesn\'t affect match quality — reduces friction for patients who just want results fast.'},{tag:'quick',t:'Add "Flexible / Any time" as a time-of-day option so patients like Tomás don\'t have to guess.'}]},
+  {label:'Insurance',sub:'Coverage & Payment',
+   scenario:'Patient is asked "Do you have dental insurance?" If yes → they are asked to select their Insurance Provider, then their specific Insurance Plan. If no → they are asked "Are you interested in exploring alternative payment options with your dentist?" (e.g. in-house discount plans, financing) with Yes / No / Maybe tiles. If payment is from a social assistance program → a dead-end screen appears: "Unfortunately, our network doesn\'t cover payment from social assistance programs right now. Leave us your email and we\'ll notify you when our network expands."',
+   touchpoints:['🔵 Insurance Provider screen','📋 Insurance Plan screen','💳 Alternative payment screen','⚠️ Social assistance dead-end screen'],
+   actions:['Selects Yes/No to dental insurance','[Insured] Selects insurance provider from list','[Insured] Selects specific insurance plan','[Uninsured] Answers alternative payment question','[Social assistance] Sees dead-end screen + leaves email'],
+   emo:{e:'😬',l:'Anxious — cost concerns peak here',d:'Insurance is the highest-anxiety step of the funnel. For Marcus-type users it\'s a critical trust checkpoint — if the system knows his plan, the match will be better. For Tomás-type users, seeing "alternative payment options" is reassuring rather than exclusionary.'},
+   pains:['Social assistance dead-end is a hard wall with no warm handoff — users feel rejected rather than helped','Insurance provider list may not be exhaustive for less common plans — no "not listed" escape route','Uninsured patients who select "No" to alternative payments may feel there\'s no path forward'],
+   opps:[{tag:'high',t:'Replace the social assistance dead-end with a warm redirect: "We\'re working on this. In the meantime, here are community health centres near you." Never leave a user with nowhere to go.'},{tag:'high',t:'Add a search/type-ahead to the insurance provider selector — scrolling a long list is slow on mobile.'},{tag:'quick',t:'For "No" to alternative payments: show upfront cost estimates rather than implying no options exist.'}]},
+  {label:'Loading',sub:'Match Processing',
+   scenario:'A branded loading screen appears: progress bar filling, three animated check marks appear one by one: "Finding dentists near [city]" → "Finding dentists that accept [insurance]…" → "Finding dentists who meet your preferences." A patient review quote rotates in the background to build social proof while the user waits.',
+   touchpoints:['⏳ Loading / Matching screen','⭐ Social proof quote carousel'],
+   actions:['Watches loading screen','Reads animated match criteria checklist','Reads rotating patient review quote'],
+   emo:{e:'🤞',l:'Anticipating — invested',d:'"The quiz personalised this. These results should actually be good." The loading screen transforms waiting from frustration into anticipation. The animated checklist makes the matching feel deliberate and thorough.'},
+   pains:['If loading takes more than 3–4 seconds, anticipation turns to impatience','The review quote feels generic if it doesn\'t reference the patient\'s specific city or scenario'],
+   opps:[{tag:'quick',t:'Personalise the loading screen copy: "Finding dentists near [their city] who accept [their insurance]…" — use actual answers from the quiz to make it feel tailored.'},{tag:'quick',t:'Add a subtle progress percentage so patients know the system is actually working, not stuck.'}]},
+  {label:'Results',sub:'Match & Contact Info',
+   scenario:'Patient reaches the results screen and is shown their matched dentist(s). They also see a Contact Info step where they enter their details to complete the new patient request (NPR). A "Return to previous results / Start a new search" modal is available if they want to go back or restart the funnel entirely.',
+   touchpoints:['✅ Results / Match screen','📝 Contact Info screen','🔄 Return to results modal'],
+   actions:['Views matched dentist(s)','Reviews match details (location, availability, insurance confirmed)','Enters contact information','Submits new patient request (NPR)','OR: taps "Start a new search" to restart the funnel'],
+   emo:{e:'😌',l:'Relieved — if the match feels right',d:'"That was actually fast. And this dentist looks right for me." If the match is good and the contact form is simple, conversion is high. If the match feels off or the form is long, the investment of the quiz feels wasted.'},
+   pains:['If only one match is returned and it doesn\'t look right, there\'s no obvious way to see more options without restarting the whole funnel','Contact info form can feel like a big ask after a quiz — patients may drop off before submitting'],
+   opps:[{tag:'high',t:'"See more dentists" option on the results screen that doesn\'t require re-answering the full quiz — just adjusts match parameters.'},{tag:'high',t:'Pre-fill contact info fields for returning users who have an Opencare account — zero friction for the repeat booker.'}]}
+ ],
+ dOps:[
+  {i:'🌿',s:'Step 01 — Welcome',t:'Speed Promise + Location Friction',b:'"Under 30 seconds" is a strong promise. Validate it with load-time monitoring. Add a "Use my location" affordance that works reliably on mobile — location permission failures silently stall users.',tag:'Funnel entry conversion'},
+  {i:'🔀',s:'Step 02 — Emergency Branch',t:'Third-Option Triage Tile',b:'Add a "I\'m not sure / I have some pain" tile that routes to a quick triage sub-step. Forcing a binary on a gradient experience (acute pain vs. routine) causes misclassification and bad matches.',tag:'Reduces branch misclassification'},
+  {i:'🧩',s:'Step 03 — Details',t:'Expand Emergency Type Taxonomy',b:'Pain/Toothache, Broken Tooth, Lost Tooth, Lost Filling, Other — "Other" is overused. Add Swelling/Abscess, Broken Crown, Sensitive Teeth as explicit tiles to improve match quality and reduce free-text burden.',tag:'Match accuracy improvement'},
+  {i:'⚡',s:'Step 04 — Preferences',t:'"Skip" Affordance on Low-Signal Questions',b:'Not every preference question meaningfully improves match quality. Allow patients to skip steps where their answer won\'t change the result — this directly reduces funnel abandonment.',tag:'Abandonment reduction'},
+  {i:'🔴',s:'Step 05 — Insurance',t:'Replace Social Assistance Dead-End',b:'The current hard wall for social assistance patients is a brand-damaging dead end. Replace with a warm redirect to community health resources. Never leave a patient with nowhere to go.',tag:'Inclusivity + brand trust'},
+  {i:'✨',s:'Step 06 — Loading',t:'Personalise the Loading Screen',b:'Use actual quiz answers in the loading copy: "Finding dentists near Chicago who accept Delta Dental PPO…" The match feels earned, not random. This single change meaningfully increases post-match trust.',tag:'Post-match conversion lift'}
+ ],
+ assumptions:['Step content and answer options read directly from Figma Funnel Master file (node 518:7566)','Non-emergency "Mouth Wellness" and "Concerns & Treatments" screen copy inferred from node names — exact answer options not fully extracted'],sources:['Figma','Notion','Monday.com']},
+
+{id:'j5',title:'Practice Onboarding — User Journey',type:'User Journey',ct:'practice',v:'v1.3',date:'Jan 2025',
+ pIcon:'🏥',pName:'New Practice — US & Canada',pSub:'Practice Onboarding · All Practice Types',
+ pQ:'"I want to grow my patient base without adding admin overhead. But I need this to be simple — I don\'t have time for a complicated setup, and I need to understand what I\'m paying before I commit."',
+ pTags:['Solo & group practices','Receptionist-managed','Tech range: low–high','US & Canada','New to Opencare'],
+ emo:[{l:'Curious',s:'Acquisition'},{l:'Motivated',s:'Sign-Up'},{l:'Impatient',s:'Setup'},{l:'Anxious',s:'Go Live'},{l:'Excited',s:'First Bookings'},{l:'Satisfied',s:'Retention'}],
+ stages:[
+  {label:'Acquisition',sub:'Discovery & Intent',scenario:'The practice discovers Opencare via a Google ad, peer referral, or dental conference. They visit the landing page and assess whether it\'s worth signing up. Commission structure, ROI potential, and onboarding effort are the three main evaluation criteria.',touchpoints:['📢 Google Ad / Referral','🌐 Opencare Landing Page','💬 Peer recommendation'],actions:['Discovers Opencare via ad, referral, or conference','Visits landing page','Reviews commission model and terms','Compares to existing patient acquisition tools'],emo:{e:'🤔',l:'Curious → Hopeful',d:'"Will this actually save me time and bring in real patients?" The value proposition needs to be immediately clear before they invest any more time.'},pains:['Value proposition not immediately clear vs. existing tools','Commission structure not visible on the landing page — creates hesitation'],opps:[{tag:'high',t:'Transparent ROI calculator on the landing page: "If you have X empty slots per week, Opencare typically fills Y, generating $Z."'},{tag:'quick',t:'Peer testimonials from practices of the same size and type — solo practice owner speaks to solo practice owner.'}]},
+  {label:'Sign-Up',sub:'Account Creation',scenario:'Practice creates an account and enters basic information. The goal is to reach the profile as quickly as possible — every extra step before seeing the product in action increases drop-off.',touchpoints:['📝 Sign-up form','📧 Email verification','🟢 Opencare Dashboard (first view)'],actions:['Creates account with basic practice details','Verifies email','Gets first look at the Opencare dashboard'],emo:{e:'🚀',l:'Motivated but impatient',d:'"I want to see what this looks like before I invest too much time setting it up." Any friction before the first meaningful moment of value causes drop-off.'},pains:['Too many fields before seeing the product — practices don\'t understand value before being asked for extensive info','Email verification step adds friction at the most critical momentum moment'],opps:[{tag:'high',t:'Progressive onboarding: minimum viable profile live in under 10 minutes. Collect additional details after the practice has seen the product.'},{tag:'quick',t:'Auto-save progress every step so a practice can return without losing their work if interrupted.'}]},
+  {label:'Setup',sub:'Profile Configuration',scenario:'Practice uploads services, sets availability, adds pricing, uploads photos, and enters credentials. This is the longest stage — and the one with the highest drop-off. Without a benchmark, practices don\'t know if their profile is good enough.',touchpoints:['👤 Profile editor','📸 Photo upload','📅 Availability configurator','💰 Pricing settings'],actions:['Uploads services and pricing','Sets weekly availability windows','Adds practitioner photos and bio','Enters credentials and certifications','Uploads office photos'],emo:{e:'😤',l:'Frustrated if setup feels endless',d:'"How much more is there? I just want to go live." Frustration peaks at the profile setup stage. Without a progress indicator and benchmark, practices stall or abandon.'},pains:['Unclear what "good" looks like — no benchmark or preview of how the profile appears to patients','No progress indicator during setup — practices don\'t know how many steps remain'],opps:[{tag:'high',t:'"Profile completeness score" with specific, actionable improvement suggestions: "Add 3 more photos to increase bookings by 40%."'},{tag:'quick',t:'Patient-view preview available at any point during setup — show exactly what patients will see before going live.'}]},
+  {label:'Go Live',sub:'Publishing Profile',scenario:'Practice reviews their profile and clicks "Go Live." This is a moment of significant anxiety — they\'re committing to a public-facing presence and don\'t know what to expect.',touchpoints:['✅ Publish button','👁 Preview mode','📧 Go-live confirmation email'],actions:['Reviews profile before publishing','Clicks "Go Live"','Receives go-live confirmation','Waits for first patient activity'],emo:{e:'😰',l:'Anxious — "will patients find me?"',d:'"I\'ve set everything up. Now what? Will anyone actually book?" Without explicit reassurance, the post-publish silence feels like failure.'},pains:['No preview mode before publishing — practices don\'t know what patients will see','No clear next-steps after going live — the post-publish experience feels like a black box'],opps:[{tag:'high',t:'Patient-view preview + explicit go-live checklist. Post-go-live: "Your profile is live — here\'s what happens next and when to expect your first booking."'},{tag:'quick',t:'Estimated time to first booking based on comparable practices: "Practices like yours typically receive their first booking within 48 hours."'}]},
+  {label:'First Bookings',sub:'First Patient Activity',scenario:'The practice receives its first patient booking notification. This is the pivotal trust-building moment — if the booking arrives quickly and the patient is well-matched, confidence in the platform jumps sharply.',touchpoints:['🔔 Booking notification','📱 Practice App','📧 Patient brief','📞 Optional: patient call'],actions:['Receives first booking notification','Reviews patient details and appointment brief','Confirms appointment','Prepares for new patient visit','Receptionist updates internal calendar'],emo:{e:'🎉',l:'Excited — trust built',description:'"It actually works." The first booking notification is the most emotionally significant moment in the onboarding journey. Everything before this is overhead — this is the payoff.'},pains:['No explanation of why that patient was matched to them — feels arbitrary','Practice app and internal calendar not synchronised — double-booking risk'],opps:[{tag:'high',t:'Match reason in booking notification: "Patient nearby with Delta Dental PPO — matched to you based on availability and insurance."'},{tag:'quick',t:'Two-way calendar sync at setup — eliminate double-booking risk before the first patient ever arrives.'}]},
+  {label:'Retention',sub:'Ongoing Engagement',scenario:'The practice monitors their dashboard, manages their schedule, and reviews earnings. Retention is driven by a clear ROI signal, low admin overhead, and the sense that Opencare is working for them.',touchpoints:['📊 Opencare Dashboard','📧 Weekly digest email','💰 Earnings tab','⭐ Review notifications'],actions:['Checks dashboard weekly (or delegates to receptionist)','Reviews earnings and commission breakdown','Monitors no-show rate','Responds to patient reviews','Evaluates Opencare vs. other acquisition channels'],emo:{e:'😌',l:'Satisfied if admin load decreased',d:'"Opencare is running in the background and bringing in patients." If this is true, the practice stays. If overhead exceeds value, they churn.'},pains:['Dashboard is hard to read at a glance for busy practitioners','No clear comparison of Opencare revenue vs. other channels — hard to justify the commission'],opps:[{tag:'high',t:'Weekly digest email: "Opencare brought you 4 new patients this week ($X revenue)." One clear metric that makes the value undeniable.'},{tag:'strategic',t:'Proactive "your slots are filling slowly — here\'s how to improve visibility" nudge when booking volume drops below baseline.'}]}
+ ],
+ dOps:[{i:'💰',s:'Stage 01',t:'Transparent ROI Calculator',b:'A landing page tool showing practices exactly how many patients and how much revenue they can expect based on location, specialty, and availability.',tag:'Acquisition conversion'},{i:'⚡',s:'Stage 02',t:'10-Minute Minimum Viable Profile',b:'Get the practice to "live" in under 10 minutes with only essential fields. Collect enrichment data post-publish, after they\'ve experienced the value.',tag:'Onboarding completion rate'},{i:'📊',s:'Stage 03',t:'Profile Completeness Score',b:'"Your profile is 60% complete. Adding photos typically increases bookings by 40%." Specific, data-driven suggestions that motivate without overwhelming.',tag:'Profile quality driver'},{i:'👁',s:'Stage 04',t:'Patient-View Preview Mode',b:'At any point during setup, the practice can see exactly what patients will see on their profile. Removes the anxiety of going live blind.',tag:'Go-live confidence'},{i:'🔔',s:'Stage 05',t:'Match-Explained Booking Notification',b:'"New booking: [Patient name], Delta Dental PPO, available Thursday 12pm — matched to you based on insurance and proximity."',tag:'First-booking trust moment'},{i:'📈',s:'Stage 06',t:'Weekly ROI Digest',b:'"Opencare brought you 4 new patients this week ($480 revenue, commission: $48)." One clear metric per week that makes the value of Opencare impossible to ignore.',tag:'Retention driver'}],
+ assumptions:['Commission clarity friction inferred from support tickets'],sources:['Monday.com','Notion','Figma']},
+
+// ── JTBD
+{id:'jt1',title:'Patient App — Jobs To Be Done',type:'JTBD',ct:'patient',v:'v1.1',date:'Mar 2025',
+ secs:[{h:'Book Without Friction',ly:'jtbd',sit:'I need a health appointment and have 5 minutes during my lunch break.',mot:'Find and confirm a slot fast, without calling anyone or navigating a slow website.',out:'Appointment confirmed with all details on my phone in under 3 minutes.'},
+  {h:'Trust Before Committing',ly:'jtbd',sit:'I\'ve never seen this practitioner before.',mot:'Verify they are qualified, well-reviewed, and accept my insurance before giving my details.',out:'Enough information on the profile to feel confident booking without googling the clinic separately.'},
+  {h:'Manage Without Effort',ly:'jtbd',sit:'Something came up and I need to reschedule.',mot:'Change the time without calling the clinic or losing my slot.',out:'New time confirmed in the app in under 2 minutes, no phone call required.'},
+  {h:'Stay Ahead of My Health',ly:'jtbd',sit:'I haven\'t had a dental check-up in over a year.',mot:'Be reminded to book routine care before it becomes a bigger problem.',out:'A timely, relevant nudge that makes it easy to book in one tap.'},
+  {h:'Recover From an Emergency',ly:'jtbd',sit:'I have sudden tooth pain on a Sunday evening.',mot:'Find a dentist who can see me today or tomorrow, not in two weeks.',out:'Same-day or next-day appointment confirmed within minutes of opening the app.'}],
+ assumptions:[],sources:['Notion','Monday.com']},
+
+{id:'jt2',title:'Practice App — Jobs To Be Done',type:'JTBD',ct:'practice',v:'v1.0',date:'Feb 2025',
+ secs:[{h:'Fill My Calendar Passively',ly:'jtbd',sit:'I have empty slots this week and no time to do outreach.',mot:'Have new patients find and book me automatically without any manual effort.',out:'Empty slots filled by Opencare-matched patients with no action required on my end.'},
+  {h:'Eliminate No-Shows',ly:'jtbd',sit:'My receptionist spends an hour a day calling to confirm appointments.',mot:'Have the platform handle reminders so no-shows drop without staff overhead.',out:'Automated reminders reduce no-show rate by a measurable amount month over month.'},
+  {h:'Stay in Full Control',ly:'jtbd',sit:'A patient tried to book outside my available hours.',mot:'Trust that the system only shows patients the slots I\'ve defined, with no exceptions.',out:'Zero bookings outside my configured availability — ever.'},
+  {h:'Know If It\'s Worth It',ly:'jtbd',sit:'My accountant asked me to justify the Opencare commission in my P&L.',mot:'See a clear, accurate breakdown of revenue generated through the platform vs. cost.',out:'A one-page ROI view that makes the business case for Opencare obvious.'},
+  {h:'Handle Problems Fast',ly:'jtbd',sit:'A patient dispute has come up and I need help now.',mot:'Reach Opencare support and get a resolution before the patient\'s appointment time.',out:'Issue resolved within the hour via in-app support with no phone queue.'}],
+ assumptions:[],sources:['Monday.com','Notion']},
+
+// ── EMPATHY MAPS
+{id:'e1',title:'Patient App — Empathy Map',type:'Empathy Map',ct:'patient',v:'v1.0',date:'Feb 2025',
+ secs:[{h:'Empathy Map',ly:'empathy',
+  thinks:['Is this practitioner actually good, or just well-promoted?','I hope I don\'t have to call them to confirm','What if I need to cancel — is that going to be a whole thing?','I don\'t want to hand over card details before I\'m sure'],
+  feels:['Mild anxiety around health decisions they\'ve been putting off','Impatience with any friction in the booking flow','Reassured by photos, reviews, and visible credentials','Frustrated when a profile doesn\'t answer basic questions'],
+  says:['I just want to find a good dentist near me quickly','Why do I still have to call to reschedule?','The app was fine but the confirmation email was basically useless','I like being able to read reviews before I commit'],
+  does:['Googles the clinic name before completing the Opencare booking','Screenshots the confirmation screen as a backup','Ignores reminder emails that arrive more than a week out','Compares at least 2–3 options before confirming']}],
+ assumptions:[],sources:['Notion']},
+
+{id:'e2',title:'Practice App — Empathy Map',type:'Empathy Map',ct:'practice',v:'v1.0',date:'Jan 2025',
+ secs:[{h:'Empathy Map',ly:'empathy',
+  thinks:['Is the commission I\'m paying actually being earned?','I hope patients matched to me are serious and will show up','What happens if something goes wrong — who handles it?','I don\'t want to be dependent on a platform I don\'t fully control'],
+  feels:['Cautiously optimistic when the first bookings come in','Anxious when a no-show happens and there\'s no recourse','Frustrated when the dashboard doesn\'t answer the questions they actually have','Proud when their Opencare rating improves'],
+  says:['Set it and forget it would be the dream','I need to know my receptionist can handle this without me','The onboarding took longer than I expected','It\'s working — we\'ve had three new patients this week from Opencare'],
+  does:['Delegates all app management to the receptionist after initial setup','Checks the earnings tab at the end of every week','Responds to negative reviews personally and promptly','Compares Opencare bookings vs. phone bookings in their own spreadsheet']}],
+ assumptions:[],sources:['Monday.com','Notion']},
+
+// ── SERVICE BLUEPRINT
+{id:'sb1',title:'Opencare — Service Blueprint',type:'Service Blueprint',ct:'both',v:'v1.1',date:'Mar 2025',
+ secs:[{h:'Patient Frontstage',ly:'blueprint',lane:'lFP',ll:'Patient',c:['Search and filter by specialty, location, availability, and insurance','View profiles, read verified reviews, check credentials','Book, reschedule, or cancel appointments entirely within the app','Receive booking confirmation, reminders, and post-appointment follow-ups','Rate and review the practice after each completed visit']},
+  {h:'Practice Frontstage',ly:'blueprint',lane:'lFPR',ll:'Practice',c:['Manage profile, services, availability windows, and pricing','Receive booking requests and confirmations via app and notification','View daily and weekly schedule with patient brief for each appointment','Access earnings breakdown, commission summary, and performance reports']},
+  {h:'Backstage',ly:'blueprint',lane:'lBS',ll:'Backstage',c:['Matching algorithm surfaces relevant practitioners by location, insurance, and specialty','Notification engine handles email, push, and SMS for both sides','Review moderation pipeline verifies reviews are linked to completed appointments','Payment processing calculates and splits commission on each transaction']},
+  {h:'Systems & Integrations',ly:'blueprint',lane:'lSY',ll:'Systems',c:['Practitioner real-time availability API','Push and email notification service','Payment gateway (US + Canada)','CRM — Monday.com for leads, onboarding, and support','Calendar integrations — Google Calendar, iCal sync for practices']},
+  {h:'Dependencies & Risks',ly:'blueprint',lane:'lDP',ll:'Risks',c:['Real-time availability only accurate if practices keep calendar updated','Review integrity depends on verified completed appointments','Commission disputes are the most common friction at the retention stage','Insurance compatibility data relies on practice self-reporting — no automated verification yet']}],
+ assumptions:['Insurance verification is manual/self-reported — no live API integration yet'],sources:['Notion','Monday.com','Figma']},
+
+// ── RESEARCH PLANS
+{id:'rp1',title:'Patient Booking Flow — Research Plan',type:'Research Plan',ct:'patient',v:'v1.0',date:'Mar 2025',
+ secs:[{h:'Research Goals',ly:'bullets',c:['Identify primary drop-off points in the patient booking funnel','Understand what information patients need to feel confident completing a booking','Evaluate the effectiveness of the current insurance filter and profile layout']},
+  {h:'Research Questions',ly:'bullets',c:['At what step do patients hesitate or abandon the booking flow, and why?','What practitioner profile information is most important for first-time patients?','How do patients currently verify insurance compatibility, and where does this break down?']},
+  {h:'Methods',ly:'tags',c:['Moderated usability testing (remote)','Task-based sessions','Think-aloud protocol','Exit survey on drop-off','Funnel analysis — quantitative']},
+  {h:'Participants',ly:'bullets',c:['8–10 participants: first-time Opencare users who did not complete a booking','Mix of insured and uninsured patients','Locations: Toronto, Vancouver, Chicago, New York']},
+  {h:'Timeline',ly:'bullets',c:['Week 1: Screener + recruitment','Week 2: Session design + pilot test','Weeks 3–4: Moderated sessions (5 per week)','Week 5: Analysis and synthesis','Week 6: Readout to product and design']}],
+ assumptions:[],sources:['Notion','Monday.com']},
+
+{id:'rp2',title:'Practice Onboarding — Research Plan',type:'Research Plan',ct:'practice',v:'v1.0',date:'Feb 2025',
+ secs:[{h:'Research Goals',ly:'bullets',c:['Identify friction points in the practice onboarding and profile setup flow','Understand what practices need to feel confident going live on Opencare','Evaluate how receptionist delegation affects onboarding success']},
+  {h:'Research Questions',ly:'bullets',c:['Where do practices stall or give up during onboarding, and what causes it?','What does "being ready to go live" mean to a practice?','How do practices who delegate to a receptionist experience onboarding differently?']},
+  {h:'Methods',ly:'tags',c:['Semi-structured interviews','Contextual inquiry (with receptionist present)','Onboarding funnel drop-off analysis','Survey to churned practices']},
+  {h:'Participants',ly:'bullets',c:['6 practices: mix of solo practitioners and small group practices','Locations: Toronto, Vancouver, Boston, Chicago','Include at least 2 practices where receptionist manages the app']},
+  {h:'Timeline',ly:'bullets',c:['Week 1: Recruitment via CRM (Monday.com churned/stalled list)','Week 2: Interview guide + pilot','Weeks 3–4: Interviews (3 per week)','Week 5: Synthesis','Week 6: Findings presented to growth and product teams']}],
+ assumptions:[],sources:['Monday.com','Notion']},
+
+// ── MARKET RESEARCH
+{id:'mr1',title:'Dental Marketplace — Market Research Summary',type:'Market Research',ct:'both',v:'v1.0',date:'Q1 2025',
+ secs:[{h:'Market Context',ly:'bullets',c:['US dental services market ~$160B annually; Canada ~$15B CAD','Online dental booking penetration: ~18–22% of appointments in 2024','67% of patients under 40 prefer online booking over phone (Opencare survey, 350K respondents)','DSOs are consolidating independent practices in major US metros']},
+  {h:'Patient Segments',ly:'tags',c:['Insurance-driven (~40%)','Anxiety-avoidant (~25%)','Cost-sensitive / uninsured (~20%)','Emergency / reactive (~15%)']},
+  {h:'Practice Segments',ly:'tags',c:['Independent solo practice','Small group practice (2–5 chairs)','DSO-affiliated','Specialist (ortho, endo, oral surgery)']},
+  {h:'Competitive Landscape',ly:'bullets',c:['Zocdoc: strong US brand, broad specialty coverage, limited dental depth','1-800-Dentist: phone-first, older demographic, limited app experience','Local dental directories: low trust, outdated listings','Google Maps / Search: primary discovery channel but no booking integration']},
+  {h:'Key Opportunities',ly:'opps',c:['Insurance verification at search stage — no competitor does this reliably','Same-day / emergency booking — high intent, underserved by existing platforms','Post-visit retention — most platforms stop at booking; rebooking is wide open','Practice ROI tools — a clear ROI dashboard is a retention lever no competitor offers']}],
+ assumptions:['Market size estimates based on industry reports, Q1 2025'],sources:['Notion','Monday.com']},
+];
+
+// ── state
+let activeId=null, segF='all', typeF='all', stageMap={};
+
+// ── init
+function init(){
+  const types=[...new Set(LIB.map(a=>a.type))];
+  const tfr=document.getElementById('typeFR');
+  tfr.innerHTML='';
+
+  // All Types chip
+  const allChip=document.createElement('div');
+  allChip.className='fc on';
+  allChip.textContent='All Types';
+  allChip.addEventListener('click',()=>setType('all'));
+  tfr.appendChild(allChip);
+
+  // One chip per type
+  types.forEach(t=>{
+    const chip=document.createElement('div');
+    chip.className='fc';
+    chip.textContent=t;
+    chip.addEventListener('click',()=>setType(t));
+    tfr.appendChild(chip);
+  });
+  render(); updateCnt();
+  const byT={};LIB.forEach(a=>{if(!byT[a.type])byT[a.type]=0;byT[a.type]++;});
+  document.getElementById('view').innerHTML=`<div class="wlc"><div style="font-size:44px">🔬</div><h2>Opencare Research Ops Assistant</h2><p>A living library of UX research artifacts for the Opencare Patient and Practice apps. Browse by type or segment, or search for what you need.</p><div class="wstats">${[['Total',LIB.length],...Object.entries(byT)].map(([l,n])=>`<div class="wst"><div class="wst-n">${n}</div><div class="wst-l">${e(l)}</div></div>`).join('')}</div></div>`;
+}
+
+function setType(t){
+  console.log('setting type to:', t);
+  typeF=t;
+  document.querySelectorAll('#typeFR .fc').forEach(el=>{
+    el.classList.toggle('on', el.textContent===(t==='all'?'All Types':t));
+  });
+  applyF();
+}
+function setSeg(s){
+  segF=s;
+  document.querySelectorAll('#segFR .fc').forEach(el=>{
+    const seg=el.getAttribute('data-seg');
+    el.className='fc'+(seg===s?' on'+(s!=='all'?' on'+s.charAt(0).toUpperCase()+s.slice(1):''):'');
+  });
+  applyF();
+}
+function applyF(){const q=document.getElementById('srch').value.toLowerCase();render(q);updateCnt(q);}
+
+function fil(q=''){return LIB.filter(a=>{const ms=segF==='all'||a.ct===segF;const mt=typeF==='all'||a.type===typeF;const mq=!q||(a.title+a.type+a.ct).toLowerCase().includes(q);return ms&&mt&&mq;});}
+function updateCnt(q=''){const n=fil(q).length;document.getElementById('cnt').textContent=n+' artifact'+(n!==1?'s':'');}
+
+function render(q=''){
+  const items=fil(q);const groups={};items.forEach(a=>{if(!groups[a.type])groups[a.type]=[];groups[a.type].push(a);});
+  const el=document.getElementById('sbList');
+  if(!items.length){el.innerHTML='<div style="padding:16px;text-align:center;font-size:13px;color:#9ca3af">No matches.</div>';return;}
+  el.innerHTML=Object.entries(groups).map(([type,arts])=>
+    `<div class="sg">${e(type)}</div>`+arts.map(a=>`
+    <div class="si ${activeId===a.id?'on':''}" onclick="openArt('${a.id}')">
+      <div class="si-t">${e(a.title)}</div>
+      <div class="si-m"><span class="bdg ${a.ct==='patient'?'bP':a.ct==='practice'?'bPR':'bB'}">${a.ct}</span><span class="bdg bPM">premade</span></div>
+      <div class="si-s">${e(a.v)} · ${e(a.date)}</div>
+    </div>`).join('')).join('');
+}
+
+function openArt(id){activeId=id;render(document.getElementById('srch').value.toLowerCase());const a=LIB.find(x=>x.id===id);if(a)draw(a);}
+
+function draw(a){
+  const gc=a.ct==='patient'?'ahP':a.ct==='practice'?'ahPR':'ahB';
+  const cl=a.ct==='both'?'Patient & Practice':(a.ct.charAt(0).toUpperCase()+a.ct.slice(1));
+  if(a.type==='User Journey'&&a.stages){drawJourney(a,gc,cl);return;}
+  let body='';
+  // Persona tagline
+  if(a.tagline) body+=`<div class="p-tagline">${e(a.tagline)}</div>`;
+  // Stats row
+  if(a.stats?.length) body+=`<div class="sec"><div class="stat-g">${a.stats.map(s=>`<div class="stat-c"><div class="stat-l">${e(s.l)}</div><div class="stat-v">${e(s.v)}</div></div>`).join('')}</div></div>`;
+  (a.secs||[]).forEach((s,i)=>{
+    const n=String(i+1).padStart(2,'0');
+    const hdr=`<div class="sh"><span class="sn">${n}</span>${e(s.h)}</div>`;
+    if(s.ly==='rich') body+=`<div class="sec">${hdr}<div class="p-rich">${e(s.body||'')}</div></div>`;
+    else if(s.ly==='tools') body+=`<div class="sec">${hdr}<div class="p-tools">${(s.tools||[]).map(t=>`<div class="p-tool">${e(t)}</div>`).join('')}</div>${s.insight?`<div class="p-insight"><strong>Insight from product data:</strong> ${e(s.insight)}</div>`:''}</div>`;
+    else if(s.ly==='commstyle') body+=`<div class="sec">${hdr}<div class="p-cs-grid">${(s.style||[]).map(x=>`<div class="p-cs-cell"><div class="p-cs-lbl">${e(x.l)}</div><div class="p-cs-val">${e(x.v)}</div></div>`).join('')}</div>${s.desc?`<div class="p-cs-desc">${e(s.desc)}</div>`:''}</div>`;
+    else if(s.ly==='goals2') body+=`<div class="sec">${hdr}<div class="p-goals2">${(s.goals||[]).map((g,j)=>`<div class="p-goal"><div class="p-goal-num">${j+1}</div><div class="p-goal-body"><div class="p-goal-title">${e(g.t)}</div><div class="p-goal-desc">${e(g.d)}</div></div></div>`).join('')}</div>${s.why?`<div class="p-why"><strong>Why Opencare?</strong> ${e(s.why)}</div>`:''}</div>`;
+    else if(s.ly==='pains2') body+=`<div class="sec">${hdr}<div class="p-pains2">${(s.pains||[]).map(p=>`<div class="p-pain"><div class="p-pain-icon">${p.icon||'⚠️'}</div><div class="p-pain-body"><div class="p-pain-title">${e(p.t)}</div><div class="p-pain-desc">${e(p.d)}</div></div></div>`).join('')}</div></div>`;
+    else if(s.ly==='queries') body+=`<div class="sec">${hdr}<div class="p-queries">${(s.queries||[]).map(q=>`<div class="p-query">${e(q)}</div>`).join('')}</div></div>`;
+    else if(s.ly==='goals') body+=`<div class="sec">${hdr}<div class="goals">${(s.c||[]).map((g,j)=>`<div class="gi"><div class="gn">${j+1}</div><div>${e(g)}</div></div>`).join('')}</div></div>`;
+    else if(s.ly==='tags') body+=`<div class="sec">${hdr}<div class="tags">${(s.c||[]).map(t=>`<div class="tag">${e(t)}</div>`).join('')}</div></div>`;
+    else if(s.ly==='pains'){const ic=['🔍','📄','💸','🗓','⏱','😟','📸','🤷','💬','📋'];body+=`<div class="sec">${hdr}<div class="pains">${(s.c||[]).map((p,j)=>`<div class="pi"><span style="font-size:14px;flex-shrink:0">${ic[j%ic.length]}</span><span>${e(p)}</span></div>`).join('')}</div></div>`;}
+    else if(s.ly==='opps') body+=`<div class="sec">${hdr}<div class="opps">${(s.c||[]).map(o=>`<div class="oi"><span>✦</span><span>${e(o)}</span></div>`).join('')}</div></div>`;
+    else if(s.ly==='jtbd') body+=`<div class="sec">${hdr}<div class="jtbd-b"><div class="jr"><span class="jl">Situation</span><span>${e(s.sit||'')}</span></div><div class="jr"><span class="jl">Motivation</span><span>${e(s.mot||'')}</span></div><div class="jr"><span class="jl">Outcome</span><span>${e(s.out||'')}</span></div></div></div>`;
+    else if(s.ly==='blueprint') body+=`<div class="sec"><div class="bpr"><span class="bpl ${s.lane}">${e(s.ll)}</span><div class="bullets">${(s.c||[]).map(c=>`<div class="bi"><span class="bd">·</span><span>${e(c)}</span></div>`).join('')}</div></div></div>`;
+    else if(s.ly==='empathy') body+=`<div class="sec"><div class="empg"><div class="eq eqT"><div class="eqh">💭 Thinks</div>${(s.thinks||[]).map(x=>`<div class="eqi">${e(x)}</div>`).join('')}</div><div class="eq eqF"><div class="eqh">❤️ Feels</div>${(s.feels||[]).map(x=>`<div class="eqi">${e(x)}</div>`).join('')}</div><div class="eq eqS"><div class="eqh">💬 Says</div>${(s.says||[]).map(x=>`<div class="eqi">${e(x)}</div>`).join('')}</div><div class="eq eqD"><div class="eqh">🤝 Does</div>${(s.does||[]).map(x=>`<div class="eqi">${e(x)}</div>`).join('')}</div></div></div>`;
+    else if(s.ly==='ecosystem') body+=`<div class="sec">${(s.groups||[]).map(g=>`<div class="ecog"><div class="ecog-t">${e(g.t)}</div><div class="econ">${(g.ns||[]).map(n=>`<div class="en ${g.nt}">${e(n)}</div>`).join('')}</div></div>`).join('')}${s.flows?.length?`<div style="margin-top:12px"><div class="sh" style="margin-bottom:8px">Key Flows</div>${s.flows.map(f=>`<div class="oi" style="margin-bottom:6px"><span>→</span><span style="font-size:12px">${e(f)}</span></div>`).join('')}</div>`:''}</div>`;
+    else body+=`<div class="sec">${hdr}<div class="bullets">${(s.c||[]).map(c=>`<div class="bi"><span class="bd">·</span><span>${e(c)}</span></div>`).join('')}</div></div>`;
+  });
+  let foot='';
+  if(a.assumptions?.length) foot+=`<div class="afa">⚠️ <strong>Assumptions:</strong> ${a.assumptions.map(x=>e(x)).join(' · ')}</div>`;
+  (a.sources||[]).forEach(s=>{foot+=`<div class="afs">📦 ${e(s)}</div>`;});
+  foot+=`<div class="afs">🏷 ${e(a.v)} · ${e(a.date)}</div>`;
+  document.getElementById('view').innerHTML=`<div class="aw"><div class="ah ${gc}"><div class="ah-ey">${e(a.type)} · ${cl}</div><div class="ah-ti">${e(a.title)}</div><div class="ah-bd"><span class="ah-b">${cl}</span><span class="ah-b">Premade</span></div><div class="ah-mt">${e(a.v)}<br/>${e(a.date)}</div></div><div class="ab">${body}<div class="afoot">${foot}</div></div></div>`;
+}
+
+function drawJourney(a,gc,cl){
+  if(!stageMap[a.id]) stageMap[a.id]=0;
+  const si=stageMap[a.id];
+  const stg=a.stages[si];
+  const ph=`<div class="j-ph"><div class="j-pm"><div class="j-pi">${a.pIcon||'👤'}</div><div class="j-pinfo"><div class="j-pname">${e(a.pName||'')}</div><div class="j-psub">${e(a.pSub||'')}</div><div class="j-pq">${e(a.pQ||'')}</div><div class="j-ptags">${(a.pTags||[]).map(t=>`<span class="j-ptag">${e(t)}</span>`).join('')}</div></div></div></div>`;
+  const ec=`<div class="j-ec"><div class="j-ect">Emotional Curve</div><div class="j-ecr">${(a.emo||[]).map((em,i)=>`<div class="j-ecs"><div class="j-ecd"></div><div class="j-ecl">${e(em.l)}</div><div class="j-ecst">${e(em.s)}</div></div>${i<a.emo.length-1?'<div class="j-ecline"></div>':''}`).join('')}</div></div>`;
+  const tabs=`<div class="j-tabs">${a.stages.map((s,i)=>`<div class="j-tab ${i===si?'on':''}" onclick="pickStage('${a.id}',${i})">${e(s.label||s)}</div>`).join('')}</div>`;
+  const detail=`<div id="jsd_${a.id}">${stageDetail(stg)}</div>`;
+  const dops=a.dOps?.length?`<div class="j-do"><div class="j-dot">Design Opportunities</div><div class="j-doc">${a.dOps.map(d=>`<div class="j-dc"><div class="j-dci">${d.i||'💡'}</div><div class="j-dcs">${e(d.s||'')}</div><div class="j-dct">${e(d.t||'')}</div><div class="j-dcb">${e(d.b||'')}</div><div class="j-dctag">${e(d.tag||'')}</div></div>`).join('')}</div></div>`:'';
+  let foot='';
+  if(a.assumptions?.length) foot+=`<div class="afa">⚠️ <strong>Assumptions:</strong> ${a.assumptions.map(x=>e(x)).join(' · ')}</div>`;
+  (a.sources||[]).forEach(s=>{foot+=`<div class="afs">📦 ${e(s)}</div>`;});
+  foot+=`<div class="afs">🏷 ${e(a.v)} · ${e(a.date)}</div>`;
+  document.getElementById('view').innerHTML=`<div class="aw"><div class="ah ${gc}"><div class="ah-ey">User Journey · ${cl}</div><div class="ah-ti">${e(a.title)}</div><div class="ah-bd"><span class="ah-b">${cl}</span><span class="ah-b">Premade</span></div><div class="ah-mt">${e(a.v)}<br/>${e(a.date)}</div></div><div class="ab">${ph}${ec}${tabs}${detail}${dops}<div class="afoot">${foot}</div></div></div>`;
+}
+
+function stageDetail(s){
+  if(!s) return '';
+  const tc=t=>t==='high'?'high':t==='quick'?'quick':t==='strategic'?'strategic':'default';
+  return `
+    <div class="j-row"><div class="j-rl"><span class="j-ri">🎬</span>Scenario</div><div class="j-rb">${e(s.scenario||'')}</div></div>
+    <div class="j-row"><div class="j-rl"><span class="j-ri">📍</span>Touch&shy;points</div><div class="j-rb"><div class="j-tps">${(s.touchpoints||[]).map(t=>`<span class="j-tp">${e(t)}</span>`).join('')}</div></div></div>
+    <div class="j-row"><div class="j-rl"><span class="j-ri">🖱️</span>User Actions</div><div class="j-rb"><ul>${(s.actions||[]).map(a=>`<li>${e(a)}</li>`).join('')}</ul></div></div>
+    <div class="j-row"><div class="j-rl"><span class="j-ri">💭</span>Emotions</div><div class="j-rb"><div class="j-emo">${s.emo?.e||''} <strong>${e(s.emo?.l||'')}</strong></div><div class="j-emodesc">${e(s.emo?.d||s.emo?.description||'')}</div></div></div>
+    <div class="j-row"><div class="j-rl"><span class="j-ri">⚠️</span>Pain Points</div><div class="j-rb">${(s.pains||[]).map(p=>`<div class="j-pc"><span>⚠️</span><span>${e(p)}</span></div>`).join('')}</div></div>
+    <div class="j-row" style="border-bottom:none"><div class="j-rl"><span class="j-ri">💡</span>Oppor&shy;tunities</div><div class="j-rb">${(s.opps||[]).map(o=>`<div class="j-oc"><div class="j-otag ${tc(o.tag)}">${e(o.tag||'opportunity')}</div><div>${e(o.t||'')}</div></div>`).join('')}</div></div>`;
+}
+
+function pickStage(id,idx){
+  stageMap[id]=idx;
+  const a=LIB.find(x=>x.id===id);if(!a)return;
+  document.querySelectorAll('.j-tab').forEach((el,i)=>el.classList.toggle('on',i===idx));
+  const det=document.getElementById('jsd_'+id);if(det) det.innerHTML=stageDetail(a.stages[idx]);
+}
+
+function e(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+init();
+console.log('Library v2 loaded.',LIB.length,'artifacts.',LIB.filter(a=>a.type==='User Journey').length,'user journeys.');
+</script>
+</body>
+</html>
